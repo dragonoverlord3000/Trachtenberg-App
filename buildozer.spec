@@ -43,7 +43,7 @@ requirements = python3,kivy,kivy_garden.matplotlib
 # requirements.source.kivy = ../../kivy
 
 # (list) Garden requirements
-garden_requirements = matplotlib
+# garden_requirements = matplotlib
 
 # (str) Presplash of the application
 #presplash.filename = %(source.dir)s/data/presplash.png
