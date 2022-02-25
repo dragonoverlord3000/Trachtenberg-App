@@ -1,0 +1,67 @@
+#:kivy 2.0.0
+
+# Navigation manager
+WindowManager:
+    MainWindowScreen:
+    InfoScreen:
+
+
+# Main window
+<MainWindowScreen>:
+    name: "main"
+
+<MainWindow>:
+    FloatLayout:
+        size: root.width, root.height
+
+        GridLayout:
+            rows: 2
+
+            Label:
+                text: "MAIN WINDOW"
+
+            GridLayout:
+                cols: 1
+                rows: 2
+
+                GridLayout:
+                    cols: 2
+                    Button:
+                        text: "UT"
+
+                    Button:
+                        text: "[1-12]"
+
+                Button:
+                    text: "Info"
+                    on_release:
+                        app.root.current = "info"
+
+<InfoScreen>:
+    name: "info"
+
+<Info>:
+    FloatLayout:
+        size: root.width, root.height
+
+        GridLayout:
+            rows: 2
+
+            Label:
+                text: "INFO PAGE"
+
+            GridLayout:
+                rows: 3
+
+                Button:
+                    text: "1"
+
+                Button:
+                    text: "2"
+
+                Button:
+                    text: "3"
+
+
+
+
