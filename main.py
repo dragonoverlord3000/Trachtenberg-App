@@ -1,6 +1,6 @@
 # IMPORTS
 # Plotting
-from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
+# from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 from matplotlib.patches import Rectangle
 import matplotlib.pyplot as plt
 
