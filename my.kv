@@ -4,6 +4,7 @@
 WindowManager:
     MainWindowScreen:
     InfoScreen:
+    TrachtSysInfoScreen:
 
 
 # Main window
@@ -54,13 +55,150 @@ WindowManager:
                 rows: 3
 
                 Button:
-                    text: "1"
+                    text: "UT"
 
                 Button:
-                    text: "2"
+                    text: "[1-12]"
 
                 Button:
-                    text: "3"
+                    text: "Trachtenberg"
+                    on_release:
+                        app.root.current = "tracht_sys_info"
+                        app.root.transition.direction = "left"
+
+<TrachtSysInfoScreen>:
+    name: "tracht_sys_info"
+
+<TrachtSysInfo>:
+    layout_content: layout_content
+
+    FloatLayout:
+        size: root.width, root.height
+
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            size: self.size
+
+            GridLayout:
+                id: layout_content
+                size_hint_y: 2.8
+                cols: 1
+                spacing: 0, 0
+                padding: 0, 0
+
+
+                Label:
+                    text: "\n\n[b]The Trachtenberg Method[/b]"
+                    color: "#000000"
+                    font_size: 28
+                    halign: "center"
+                    markup: True
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    text_size: self.width, None
+                    padding: 10, 10
+
+                Label:
+                    color: "#000000"
+                    text: "[b]What is the Trachtenberg method[/b]"
+                    halign: "left"
+                    font_size: 22
+                    markup: True
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    text_size: self.width, None
+                    padding: 10, 10
+
+                Label:
+                    color: "#000000"
+                    text: "The trachtenberg method is a way of multiplication that optimizes speed by allocating as few temporary numbers as possible to be kept in memory as possible. It was was developed by [i]Jakow Trachtenberg[/i] to keep his mind occupied while being in a Nazi concentration camp.\n"
+                    halign: "left"
+                    font_size: 18
+                    markup: True
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    text_size: self.width, None
+                    padding: 10, 0
+
+                Label:
+                    color: "#000000"
+                    text: "[b]Conventions[/b]"
+                    halign: "left"
+                    font_size: 22
+                    markup: True
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    text_size: self.width, None
+                    padding: 10, 10
+                
+                Label:
+                    color: "#000000"
+                    text: """The trachtenberg system always start at the rightmost digit and the proceeds to move towards the left. 'The current digit' is often reffered to as 'the number' while the number to it's right is reffered to as it's 'neighbor'. \nOne of the features of the trachtenberg system is that you never have to carry more than a 2 and because of this any carry is simply represented by a dot in the trachtenberg system - see the figure below:"""
+                    halign: "left"
+                    font_size: 18
+                    markup: True
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    text_size: self.width, None
+                    padding: 10, 0
+
+                Image:
+                    source: "./carry_im.png"
+                    padding: 0,0
+                    size_hint_y: None
+                    #size: self.width + 20, self.height + 20
+
+                Label:
+                    color: "#000000"
+                    text: "[i][b]Note[/b] that the rule for multiplying by 11 is [b]take the number and add the neighbor[/b]; For example: the first number above is 5 + 0 = [u]5[/u], the next is 5 + 5 = 1[u]0[/u] with the tens digit being a carry (the dot), the next is 5 + 5 = 10 and then plus the carry = 1[u]1[/u] with the tens digit being a carry (the dot), and so on... [/i]\n"
+                    halign: "left"
+                    font_size: 16
+                    markup: True
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    text_size: self.width, None
+                    padding: 10, 0
+
+                Label:
+                    color: "#000000"
+                    text: "[b]More Material[/b]"
+                    halign: "left"
+                    font_size: 22
+                    markup: True
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    text_size: self.width, None
+                    padding: 10, 10
+
+                Label:
+                    color: "#000000"
+                    # Add amazon affiliate link for book + my upcommin YT-videos ???
+                    text: "If you're looking for more material on the trachtenberg method, then I highly recommend the book '[i]The Trachtenberg Speed System Of Mathematics[/i]' by Ann Cutler and Rudolph McShane. It is an in depth, easy to follow, book about all of the trachtenberg system."
+                    halign: "left"
+                    font_size: 18
+                    markup: True
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    text_size: self.width, None
+                    padding: 10, 0
+
+
+
+        Button:
+            text: "Back"
+            pos_hint: {"right": 0.185, "top": 0.99}
+            size_hint: 0.175,0.075
+            background_color: (1,0,0,3/4)
+            on_release: 
+                app.root.current = "info"
+                root.parent.manager.transition.direction = "right"
+
+
+
+
+
+
 
 
 

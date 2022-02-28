@@ -16,7 +16,7 @@ from kivy.lang import Builder
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.widget import Widget
-
+from kivy.uix.floatlayout import FloatLayout
 
 # Set background RGBA color - should be a nice gray ???
 from kivy.core.window import Window
@@ -43,7 +43,15 @@ class InfoScreen(Screen):
 class Info(Widget):
     pass
 
+# Trachtenberg system conventions + trachtenberg history
+class TrachtSysInfo(FloatLayout):   
+    def __init__(self, **kw):
+        super(TrachtSysInfo, self).__init__(**kw)
 
+class TrachtSysInfoScreen(Screen):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(TrachtSysInfo())
 
 
 
