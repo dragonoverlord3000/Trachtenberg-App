@@ -41,6 +41,9 @@ class Info(Widget):
 
 
 
+
+
+
 # Get `kv` file
 kv = Builder.load_file("my.kv")
 
