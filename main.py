@@ -1,5 +1,10 @@
 # IMPORTS
 # Plotting
+import kivy
+# Specify kivy version
+kivy.require("1.9.0")
+
+# Plotting imports
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 from matplotlib.patches import Rectangle
 import matplotlib.pyplot as plt
@@ -11,6 +16,7 @@ from kivy.lang import Builder
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.widget import Widget
+
 
 
 # Navigation manager
