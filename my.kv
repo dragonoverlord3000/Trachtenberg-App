@@ -5,6 +5,7 @@ WindowManager:
     MainWindowScreen:
     InfoScreen:
     TrachtSysInfoScreen:
+    Test:
 
 
 # Main window
@@ -32,6 +33,8 @@ WindowManager:
 
                     Button:
                         text: "[1-12]"
+                        on_release:
+                            app.root.current = "test"
 
                 Button:
                     text: "Info"
@@ -195,7 +198,8 @@ WindowManager:
                 root.parent.manager.transition.direction = "right"
 
 
-
+<Test>:
+    name: "test"
 
 
 

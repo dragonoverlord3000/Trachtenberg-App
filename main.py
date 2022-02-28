@@ -54,6 +54,11 @@ class TrachtSysInfoScreen(Screen):
         self.add_widget(TrachtSysInfo())
 
 
+class Test(Screen):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        plt.text(0.5,0.5,"HEYO!!!")
+        self.add_widget(FigureCanvasKivyAgg(plt.gcf()))
 
 
 # Get `kv` file
