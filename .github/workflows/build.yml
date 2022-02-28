@@ -11,12 +11,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      # - name: Install kivy_garden
-      #   run: pip install kivy_garden
-
-      # - name: Install kivy_garden.matplotlib
-      #   run: garden install matplotlib
-
       - name: Build with Buildozer
         uses: ArtemSBulgakov/buildozer-action@v1
         id: buildozer

@@ -5,7 +5,7 @@ import kivy
 kivy.require("1.9.0")
 
 # Plotting imports
-from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
+from backend_kivyagg import FigureCanvasKivyAgg
 from matplotlib.patches import Rectangle
 import matplotlib.pyplot as plt
 
