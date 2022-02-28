@@ -18,6 +18,10 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.widget import Widget
 
 
+# Set background RGBA color - should be a nice gray ???
+from kivy.core.window import Window
+Window.clearcolor = (192/255, 187/255, 178/255, 1)
+
 
 # Navigation manager
 class WindowManager(ScreenManager):
