@@ -1777,29 +1777,23 @@ class UT_Mult(Widget):
         if len(self.number) > 0:
             self.top.clear_widgets()
             
-            # Fill over identifier rect and former number
-            fill_rect1 = Rectangle((self.idxes[len(str(self.LHS) + str(self.RHS)) - len(self.number)] - 0.03 - 0.01, 0.5 - 0.28), 0.06 + 0.02, 0.195, facecolor=(192/255, 187/255, 178/255, 1), edgecolor=(192/255, 187/255, 178/255, 1), linewidth=2, zorder=1)
-            fill_rect2 = Rectangle((self.idxes[len(str(self.LHS) + str(self.RHS)) - len(self.number) - 1] - 0.03 - 0.01, 0.5 - 0.28), 0.06 + 0.02, 0.195, facecolor=(192/255, 187/255, 178/255, 1), edgecolor=(192/255, 187/255, 178/255, 1), linewidth=2, zorder=1)
-            plt.gca().add_patch(fill_rect1)
-            plt.gca().add_patch(fill_rect2)
-        
-            # Plot new identifier rect
-            rect = Rectangle((self.idxes[len(str(self.LHS) + str(self.RHS)) - len(self.number)] - 0.035, 0.5 - 0.27), 0.07, 0.17, facecolor="none", edgecolor="black", linewidth=2, zorder=1)
-            plt.gca().add_patch(rect)
-        
-            # Reassign number
-            self.number = self.number[1:]
-            
-            # Reassign carry
-            self.carries[len(self.number)] = 0
-            
-            # Plot new figure
-            self.top.add_widget(FigureCanvasKivyAgg(plt.gcf()))
+            # In stead of filling over, I should call `self.CE()` and then call the `btn` and `carry` methods as needed
+            num = self.number[1:]
+            carr = self.carries[:len(self.number)]
+            self.CE()
+            for i,n in enumerate(reversed(num)):
+                self.btn(eval(n))
+                print(i,self.carries)
+                carry_val = carr[i]
+                if carry_val >= 1:
+                    self.carry()
+                    if carry_val == 2:
+                        self.carry()
 
             
     # Add dot, to symbol a carry
     def carry(self):
-        if self.carries[len(self.number) - 1] < 2 and len(self.number) >= 1:
+        if self.carries[len(self.number) - 1] <= 2 and len(self.number) >= 1:
             print("Carry")
             
             # Clear current image
