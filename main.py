@@ -2247,6 +2247,162 @@ class UTInfoScreen(Screen):
         self.add_widget(UTInfo())
         
 
+# [1-12] explainer
+class OneTwelveExplainer(Widget):
+    inter_plot = ObjectProperty(None)
+    arrow_idx = 5
+    
+    def __init__(self, num, **kw):
+        super().__init__(**kw)
+        
+        # Set LHS and RHS
+        self.LHS = self.ids["LHS"]
+        self.RHS = num
+        
+        # Set title
+        self.title = self.ids["title"]
+        self.title.text = f"Rules | {num}-multiplication"
+        
+        # Set rule
+        self.rule = self.ids["rule"]
+        if num == 12:
+            self.rule.text = """\n[i]Rule[/i] - [b]Double each number add it's neighbor[/b]\n"""
+        elif num == 11:
+            self.rule.text = """\n[i]Rule[/i] - [b]To each number add it's neighbor[/b]\n"""
+        elif num == 9:
+            self.rule.text = """[i]Rule 1.)[/i] - [b]First digit: subtract from 10[/b]\n[i]Rule 2.)[/i] - [b]Middle digits: Subtract the number from 9 and add the neighbor[/b]\n[i]Rule 3.)[/i] - [b]Last digit: subtract 1 from the leftmost digit in the number[/b]"""
+        elif num == 8:
+            self.rule.text = """[i]Rule 1.)[/i] - [b]First digit: subtract from 10 and double[/b]\n[i]Rule 2.)[/i] - [b]Middle digits: Subtract the number from 9 and double what you get, then add the neighbor[/b]\n[i]Rule 3.)[/i] - [b]Last digit: subtract 2 from the leftmost digit in the number[/b]"""
+        elif num == 7:
+            self.rule.text = """[i]Rule[/i] - [b]Double the number and add half the neighbor; add 5 if the number is odd. [/b]""" 
+        elif num == 6:
+            self.rule.text = """[i]Rule[/i] - [b]To each "number" add half the neighbor; plus 5 if "number" is odd.[/b]""" 
+        elif num == 5:
+            self.rule.text = """[i]Rule[/i] - [b]Half the neighbor; plus 5 if "number" is odd.[/b]""" 
+        elif num == 4:
+            self.rule.text = """[i]Rule 1.)[/i] - [b]First digit: subtract from 10[/b]\n[i]Rule 2.)[/i] - [b]Middle digits: Subtract the number from 9 and add half the neighbor; add 5 if the number is odd[/b]\n[i]Rule 3.)[/i] - [b]Last digit: subtract 1 from half of the leftmost digit in the number[/b]"""
+        elif num == 3:
+            self.rule.text = """[i]Rule 1.)[/i] - [b]First digit: subtract from 10 and double; Add 5 if the number is odd[/b]\n[i]Rule 2.)[/i] - [b]Middle digits: Subtract the number from 9 and double what you get, then add half the neighbor; add 5 if the number is odd[/b]\n[i]Rule 3.)[/i] - [b]Last digit: subtract 2 from half of the leftmost digit in the number[/b]"""
+        elif num == 2:
+            self.rule.text = """[i]Rule[/i] - [b]Double the number[/b]"""   
+        
+        # The widget in which to plot stuff
+        self.box = self.inter_plot
+
+        self.plotter(self.LHS.text)
+        
+    def plotter(self, LHS):
+        LHS = "".join([str(char) for char in LHS if char.isnumeric()])
+        if not LHS:
+            LHS = "0"
+            
+        LHS = eval(LHS)
+                    
+        while self.arrow_idx > len(self.LHS.text + str(self.RHS)):
+            self.arrow_idx -= 1
+        while self.arrow_idx < 0:
+            self.arrow_idx += 1
+        
+        # Plot mult
+        plt.close("all")
+        if self.RHS == 2:
+            _ = prod_plotter_2(LHS, self.arrow_idx)
+        elif self.RHS == 3:
+            _ = prod_plotter_3(LHS, self.arrow_idx)
+        elif self.RHS == 4:
+            _ = prod_plotter_4(LHS, self.arrow_idx)
+        elif self.RHS == 5:
+            _ = prod_plotter_5(LHS, self.arrow_idx)
+        elif self.RHS == 6:
+            _ = prod_plotter_6(LHS, self.arrow_idx)
+        elif self.RHS == 7:
+            _ = prod_plotter_7(LHS, self.arrow_idx)
+        elif self.RHS == 8:
+            _ = prod_plotter_8(LHS, self.arrow_idx)
+        elif self.RHS == 9:
+            _ = prod_plotter_9(LHS, self.arrow_idx)
+        elif self.RHS == 11:
+            _ = prod_plotter_11(LHS, self.arrow_idx)
+        elif self.RHS == 12:
+            _ = prod_plotter_12(LHS, self.arrow_idx)
+                  
+        self.fig_widget = FigureCanvasKivyAgg(plt.gcf()) # , size_hint = (0.6, 0.6), pos_hint={"x": 0.2, "top": 0.75}
+        self.box.add_widget(self.fig_widget)
+        
+        
+    def inp_check(self):
+        if self.LHS.text:
+            self.LHS.text = str(self.LHS.text)[:3]
+            self.LHS.text = self.LHS.text.lstrip("0")
+            
+        self.box.clear_widgets()
+        plt.close("all")
+        self.plotter(self.LHS.text)
+        
+    def incr_arrow_idx(self):
+        self.arrow_idx += 1
+        self.box.clear_widgets()
+        plt.close("all")
+        self.plotter(self.LHS.text)
+    
+    def decr_arrow_idx(self):
+        self.arrow_idx -= 1
+        self.box.clear_widgets()
+        plt.close("all")
+        self.plotter(self.LHS.text)  
+
+
+# [1-12] explainers
+class TwoExplainerScreen(Screen):    
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(OneTwelveExplainer(2))
+
+class ThreeExplainerScreen(Screen):    
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(OneTwelveExplainer(3))
+
+class FourExplainerScreen(Screen):    
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(OneTwelveExplainer(4))
+
+class FiveExplainerScreen(Screen):    
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(OneTwelveExplainer(5))
+
+class SixExplainerScreen(Screen):    
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(OneTwelveExplainer(6))
+
+class SevenExplainerScreen(Screen):    
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(OneTwelveExplainer(7))
+
+class EightExplainerScreen(Screen):    
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(OneTwelveExplainer(8))
+
+class NineExplainerScreen(Screen):    
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(OneTwelveExplainer(9))
+
+class ElevenExplainerScreen(Screen):    
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(OneTwelveExplainer(11))
+
+class TwelveExplainerScreen(Screen):    
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(OneTwelveExplainer(12))
+
 
 # Get `kv` file
 # - the kivy file has same name is app class (minus the 'app' part and is thus loaded automatically)
