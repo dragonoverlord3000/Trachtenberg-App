@@ -5,6 +5,7 @@ WindowManager:
     MainWindowScreen:
     InfoScreen:
     TrachtSysInfoScreen:
+    UTInfoScreen:
     Test:
 
 
@@ -17,30 +18,65 @@ WindowManager:
         size: root.width, root.height
 
         GridLayout:
-            rows: 2
+            rows: 3
 
             Label:
-                text: "MAIN WINDOW"
+                id: counter
+                text: "Total multiplications solved\n"
+                markup: True
+                font_size: 20
+                color: "#000000"
+                size_hint: 1, 1/5
+                halign: "center"
+                valign: "center"
+
+            Label:
+                text: "Game Mode"
+                color: "#000000"
+                font_size: 28
 
             GridLayout:
                 cols: 1
                 rows: 2
 
-                GridLayout:
+                GridLayout: 
                     cols: 2
+
                     Button:
                         text: "UT"
+                        font_size: 23
+                        on_release: 
+                            app.root.current = "mult"
+                            root.parent.manager.transition.direction = "left"
 
                     Button:
-                        text: "[1-12]"
-                        on_release:
-                            app.root.current = "test"
+                        text: "1-12"
+                        font_size: 23
+                        on_release: 
+                            app.root.current = "one_twelve"
+                            root.parent.manager.transition.direction = "left"
 
-                Button:
-                    text: "Info"
-                    on_release:
-                        app.root.current = "info"
+                GridLayout:
+                    cols: 1
 
+                    Button:
+                        text: "Info"
+                        font_size: 23
+                        on_release: 
+                            app.root.current = "info"
+                            root.parent.manager.transition.direction = "left"
+            
+        Button:
+            text: "RELOAD"
+            background_color: "#add8e6"
+            font_size: 16
+            pos_hint: {"right": 0.63, "top": 0.9}
+            size_hint: 0.26,0.08
+            # on_press:
+            #     root.update_counter()
+
+
+# Main > Info
 <InfoScreen>:
     name: "info"
 
@@ -50,27 +86,53 @@ WindowManager:
 
         GridLayout:
             rows: 2
+            cols: 1
 
             Label:
-                text: "INFO PAGE"
+                text: "Info & Rules"
+                color: "#000000"
+                font_size: 28
 
             GridLayout:
+                cols: 1
                 rows: 3
 
                 Button:
-                    font_name: "./arial.ttf"
-                    font_size: 40
-                    text: "UT ←"
-
-                Button:
-                    text: "[1-12]"
-
-                Button:
                     text: "Trachtenberg"
+                    font_size: 23
+                    background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else (178/255, 192/255, 187/255, 1/2)
                     on_release:
                         app.root.current = "tracht_sys_info"
-                        app.root.transition.direction = "left"
+                        root.parent.manager.transition.direction = "left"
 
+                Button:
+                    text: "Rules [1-12]"
+                    font_size: 23
+                    background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else (178/255, 192/255, 187/255, 1/2)
+                    on_release:
+                        app.root.current = "expl_11"
+                        root.parent.manager.transition.direction = "left"
+
+
+                Button:
+                    text: "Rule UT"
+                    font_size: 23
+                    background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else (178/255, 192/255, 187/255, 1/2)
+                    on_release: 
+                        app.root.current = "ut_info"
+                        root.parent.manager.transition.direction = "left"
+
+
+        Button:
+            text: "Back"
+            pos_hint: {"right": 0.185, "top": 0.99}
+            size_hint: 0.175,0.075
+            background_color: (1,0,0,3/4)
+            on_release: 
+                app.root.current = "main"
+                root.parent.manager.transition.direction = "right"
+
+# Main > Info > Trachtenberg
 <TrachtSysInfoScreen>:
     name: "tracht_sys_info"
 
@@ -198,6 +260,111 @@ WindowManager:
             on_release: 
                 app.root.current = "info"
                 root.parent.manager.transition.direction = "right"
+
+<UTInfoScreen>:
+    name: "ut_info"
+
+<UTInfo>:
+    inter_plot: inter_plot
+    my_LHS: LHS
+    my_RHS: RHS
+
+    FloatLayout:
+        size: root.width, root.height        
+
+        GridLayout:
+            cols: 1
+            rows: 3
+
+            Label:
+                size_hint: 1, 1/2
+                text: "Rules | UT-multiplication"
+                color: "#000000"
+                font_size: 23
+
+            GridLayout:
+                cols: 1
+                rows: 2
+
+                BoxLayout:
+                    id: inter_plot
+
+                BoxLayout:
+                    size_hint: 1, 1/4
+                    orientation: "horizontal"
+
+                    TextInput:
+                        id: LHS
+                        multiline: False
+                        font_size: self.height * 0.8
+                        text: "123"
+                        on_text: root.inp_check()
+                        valign: "center"
+                        halign: "center"
+
+                    TextInput:
+                        id: RHS
+                        multiline: False
+                        font_size: self.height * 0.8
+                        text: "45"
+                        on_text: root.inp_check()
+                        valign: "center"
+                        halign: "center"
+
+
+
+            ScrollView:
+                do_scroll_x: False
+                do_scroll_y: True
+
+                Label:
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    text_size: self.width, None
+                    padding: 10, 10
+
+                    markup: True
+                    color: "#000000"
+                    font_size: 18
+                    text: 
+                        """The [b]u[/b]nits-[b]t[/b]ens multiplication method ([i]UT-method[/i]) is a method for multiplying [b]arbitrary[/b] integers with a minimal amount of temporary results to be kept in memory.
+                        The rules for multiplying two digits, [i]abc[/i] and [i]de[/i] using  UT-multiplication are as follows: \n\n\n 1. [i]Preparation[/i]: Add a number of leading 0's, to the left term in the product, equal to the number of digits in the right hand side of the  product. E.g. write the number 123 as 000123 if 123 is multiplied by  a 3 digit number (this is done automatically in this app).
+                        \n 2. [i]Calculation (tip: try to follow the steps here in the widget above)[/i]:  \nTo find the first digit of the answer, take the units digit of  multiplying the rightmost digit of the left and right terms in the  product e.g. 3 * 5 = 1[u]5[/u]. \nTo find the second digit of the answer add the units digit of multiplying the second digit on the left term by the first digit  of the right term, read from the right e.g. 2 * 5 = 1[u]0[/u].  
+                        Add this to the tens digit of multiplying the rightmost digit in  the right and left terms e.g. 3 * 5 = [u]1[/u]5 and finally add  the units digit of the second term from the left of the right term with the rightmost digit in the left term e.g. 3 * 4 = 1[u]2[/u]. So 0 + 1 + 2 = 3. \n...\n To find digit number [i]n[/i] of the answer, take the units digit of the result of multiplying the first digit in the right term with the n'th digit of the left term and add the tens digit of multiplying the first digit in the right term with the (n - 1)'th digit of the left term. 
+                        Then take the units digit of the result of multiplying the  second digit in the right term with the (n - 1)'th digit of the left term  and add the tens digit of multiplying the second digit in the right term with  the (n - 2)'th digit of the left term. \n Then take the units digit of the result of multiplying the  third digit in the right term with the (n - 2)'th digit of the left term and add the tens digit of multiplying the third digit in the right term with  the (n - 3)'th digit of the left term. 
+                        \nCarry on like this until you run out of digits one way or the other. 
+                        \nFinally, add up all the intermediate results and possibly carries from former digits. The answer is the units digit of this result, the carry is the tens digit of the result. \n\nThe best way to get a feel for this process is by practicing - use the above widget on your own numbers and try to follow the process. \n\n 3. [i]Checking[/i]: The standard way to check whether your answer is correct is to multiply the digital root (definition below) of the left term with the digital root of the right term, take the digit sum (definition below) of the result and compare it with the digital root of your answer.
+                        [u]Digit sum[/u]: the sum of the digits in a number e.g. the digit sum of 1234 -> 1 + 2 + 3 + 4 = 10 and the digit sum of 6283 -> 6 + 2 + 8 + 3 = 19 
+                        [u]Digital root[/u]: the result of repeatedly doing the digit sum of a number until the result is in the single digits e.g. the digital root of 1234 -> 1 + 2 + 3 + 4 = 10 -> 1 + 0 = [i]1[/i] and the digital root of 6283 -> 6 + 2 + 8 + 3 = 19 -> 1 + 9 = 10 -> 1 + 0 = [i]1[/i]"""
+
+        Button:
+            text: "R"
+            pos_hint: {"right": 0.99, "top": 0.7}
+            size_hint: 0.09,0.09
+            background_color: (0,1,0,1)
+            on_release: 
+                root.incr_arrow_idx()
+
+
+        Button:
+            text: "L"
+            pos_hint: {"right": 0.1, "top": 0.7}
+            size_hint: (0.09,0.09)
+            background_color: (0,0,1,1)
+            on_release: 
+                root.decr_arrow_idx()
+
+        Button:
+            text: "Back"
+            pos_hint: {"right": 0.185, "top": 0.99}
+            size_hint: 0.175,0.075
+            background_color: (1,0,0,3/4)
+            on_release: 
+                app.root.current = "info"
+                root.parent.manager.transition.direction = "right"
+
+
+
 
 
 <Test>:
