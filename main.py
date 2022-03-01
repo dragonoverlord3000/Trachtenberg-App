@@ -22,7 +22,7 @@ from kivy.uix.button import Button
 
 from kivy.properties import ObjectProperty
 
-# Set background RGBA color - should be a nice gray ???
+# Set background RGBA color - should be a nice gray
 from kivy.core.window import Window
 Window.clearcolor = (192/255, 187/255, 178/255, 1)
 
@@ -176,6 +176,1083 @@ def prod_plotter(LHS, RHS, arrow_idx=None, rect_idx=0, background_color=(192/255
     # plt.show()
     return idxes
 
+def prod_plotter_2(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/255, 1), foreground_color=(0,0,0), step_by_step=False):
+    """Plots product of LHS and RHS, possibly with arrows to indicate 
+    next move / an error
+
+    Args:
+        LHS (int): The product left hand side
+        RHS (int): The product right hand side
+        arrow_idx (int, optional): arrow index - from left to right. Defaults to None.
+            None implies no arrows
+        rect_idx (int, optional): rectangle index - from right to left. Defaults to 0.
+            None implies no rectangle
+    """
+
+    # Some setup stuff
+    plt.figure(figsize=(3,4), facecolor=background_color)
+    font_size = 15
+    plt.xlim((0,1))
+    plt.ylim((0,1))
+    plt.axis("off")
+
+    # Convert left and right terms to strings and add spaces to the LHS equal to len(RHS)
+    RHS = 2
+    text2 = str(RHS)
+    text1 = "0" * len(text2) + str(LHS)
+    times = r"\times"
+
+    # The desired answer
+    answer = str(LHS * RHS)
+    answer = "0" * (len(text1) - len(answer)) + answer
+    
+    # Get length of whole plotted string
+    length = len(text1) + 1 + len(text2)
+
+    # Get midpoint for x-axis and for y-axis
+    x_half = y_half = 0.5
+
+    # Generate indicies for the text to plot s.t. letters/numbers are evenly spaced and centered in the image
+    dist = 0.1
+    
+    idxes = [x_half - dist * (length/2 - (i + 0.6)) for i in range(length)]
+
+    # Plot LHS
+    for i, t in enumerate(text1):
+        plt.text(idxes[i], y_half, fr"${t}$", {"size":font_size}, ha="center", va="center", color=foreground_color)
+        
+    # Plot 'times' symbol
+    plt.text(idxes[len(text1)], y_half, fr"${times}$", {"size":font_size}, ha="center", va="center", color=foreground_color)
+
+    # Plot RHS
+    for i, t in enumerate(text2):
+        plt.text(idxes[i + 1 + len(text1)], y_half, fr"${t}$", {"size": font_size}, ha="center", va="center", color=foreground_color)
+        
+    # Underline for LHS product
+    plt.plot([idxes[0] - 0.02, idxes[len(text1) - 1] + 0.02], [y_half - 0.075, y_half- 0.075], color=foreground_color)
+
+    # Function for creating helper arrows
+    def plot_arrows(idx1, idx2, height=0.35):
+        """
+        idx1: idxes for the LHS of the \times are in [0, len(text1)]
+        idx2: idxes for the RHS of the \times are in [0, len(text2)]
+        height: how far up to go (0.4, 0.3 and 0.2 are good choices)
+        """
+        m = 0.8
+                
+        plt.arrow(idxes[idx1], y_half + height, 0, 0.95 * (0.1 - height), length_includes_head=True, head_width=0.015, color=foreground_color)
+        if (idx1 + 1) < len(text1):
+            plt.arrow(idxes[idx1+1], y_half + height, 0, 0.95 * (0.1 - height), length_includes_head=True, head_width=0.015, color=foreground_color)
+
+    # Plot answer up untill arrow_idx, plot the arrow_idx digit with bold
+    # Plot arrows according to the arrow indexing
+    if arrow_idx != None:
+        carry = 0
+        for i in range(len(text1) - arrow_idx):
+            digit = carry
+            idx = len(text1) - i - 1
+            if idx >= len(text1):
+                break
+            mult = str(eval(text1[idx]) * 2 + carry)
+            # mult = "0" + mult if len(mult) == 1 else mult
+            digit = eval(mult)
+                
+            digit = str(digit) if digit >= 10 else "0" + str(digit)
+            plt.text(idxes[len(text1) - 1 - i], y_half - 0.2, fr"${digit[1]}$", {"size": font_size}, ha="center", va="center", color=foreground_color)
+            
+            # Plot carry dots
+            if eval(digit[0]) == 1:
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                carry = 1
+            else:
+                carry = 0
+    
+        for i in range(len(text2)):
+            if (arrow_idx + i) >= len(text1):
+                break
+            plot_arrows(arrow_idx + i, len(text2) - i - 1, height=(0.35 - 0.075*i))
+
+    return idxes
+
+
+def prod_plotter_3(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/255, 1), foreground_color=(0,0,0), step_by_step=False):
+    """Plots product of LHS and RHS, possibly with arrows to indicate 
+    next move / an error
+
+    Args:
+        LHS (int): The product left hand side
+        RHS (int): The product right hand side
+        arrow_idx (int, optional): arrow index - from left to right. Defaults to None.
+            None implies no arrows
+        rect_idx (int, optional): rectangle index - from right to left. Defaults to 0.
+            None implies no rectangle
+    """
+
+    # Some setup stuff
+    plt.figure(figsize=(3,4), facecolor=background_color)
+    font_size = 15
+    plt.xlim((0,1))
+    plt.ylim((0,1))
+    plt.axis("off")
+
+    # Convert left and right terms to strings and add spaces to the LHS equal to len(RHS)
+    RHS = 3
+    text2 = str(RHS)
+    text1 = "0" * len(text2) + str(LHS)
+    times = r"\times"
+
+    # The desired answer
+    answer = str(LHS * RHS)
+    answer = "0" * (len(text1) - len(answer)) + answer
+    
+    # Get length of whole plotted string
+    length = len(text1) + 1 + len(text2)
+
+    # Get midpoint for x-axis and for y-axis
+    x_half = y_half = 0.5
+
+    # Generate indicies for the text to plot s.t. letters/numbers are evenly spaced and centered in the image
+    dist = 0.1
+    
+    idxes = [x_half - dist * (length/2 - (i + 0.6)) for i in range(length)]
+
+    # Plot LHS
+    for i, t in enumerate(text1):
+        plt.text(idxes[i], y_half, fr"${t}$", {"size":font_size}, ha="center", va="center", color=foreground_color)
+        
+    # Plot 'times' symbol
+    plt.text(idxes[len(text1)], y_half, fr"${times}$", {"size":font_size}, ha="center", va="center", color=foreground_color)
+
+    # Plot RHS
+    for i, t in enumerate(text2):
+        plt.text(idxes[i + 1 + len(text1)], y_half, fr"${t}$", {"size": font_size}, ha="center", va="center", color=foreground_color)
+        
+    # Underline for LHS product
+    plt.plot([idxes[0] - 0.02, idxes[len(text1) - 1] + 0.02], [y_half - 0.075, y_half- 0.075], color=foreground_color)
+
+    # Function for creating helper arrows
+    def plot_arrows(idx1, idx2, height=0.35):
+        """
+        idx1: idxes for the LHS of the \times are in [0, len(text1)]
+        idx2: idxes for the RHS of the \times are in [0, len(text2)]
+        height: how far up to go (0.4, 0.3 and 0.2 are good choices)
+        """
+        m = 0.8
+                
+        plt.arrow(idxes[idx1], y_half + height, 0, 0.95 * (0.1 - height), length_includes_head=True, head_width=0.015, color=foreground_color)
+        if (idx1 + 1) < len(text1):
+            plt.arrow(idxes[idx1+1], y_half + height, 0, 0.95 * (0.1 - height), length_includes_head=True, head_width=0.015, color=foreground_color)
+
+    # Plot answer up untill arrow_idx, plot the arrow_idx digit with bold
+    # Plot arrows according to the arrow indexing
+    if arrow_idx != None:
+        carry = 0
+        for i in range(len(text1) - arrow_idx):
+            digit = carry
+            idx = len(text1) - i - 1
+            if idx >= len(text1):
+                break
+            number = eval(text1[idx])
+            neighbor = 0
+            if (idx + 1) < len(text1):
+                neighbor = eval(text1[idx + 1])
+            
+            if i == 0:
+                digit += 2 * (10 - number) + 5 * (number % 2)
+            elif i == len(text1) - 1:
+                digit += int(neighbor/2) - 2
+            else:
+                digit += 2 * (9 - number) + int(neighbor/2) + 5 * (number % 2)            
+            
+            digit = str(digit) if digit >= 10 else "0" + str(digit)
+            plt.text(idxes[len(text1) - 1 - i], y_half - 0.2, fr"${digit[1]}$", {"size": font_size}, ha="center", va="center", color=foreground_color)
+            
+            # Plot carry dots
+            if eval(digit[0]) == 1:
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                carry = 1
+            elif eval(digit[0]) == 2:
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                carry = 2
+            else:
+                carry = 0
+    
+        for i in range(len(text2)):
+            if (arrow_idx + i) >= len(text1):
+                break
+            plot_arrows(arrow_idx + i, len(text2) - i - 1, height=(0.35 - 0.075*i))
+
+    return idxes
+
+
+def prod_plotter_4(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/255, 1), foreground_color=(0,0,0), step_by_step=False):
+    """Plots product of LHS and RHS, possibly with arrows to indicate 
+    next move / an error
+
+    Args:
+        LHS (int): The product left hand side
+        RHS (int): The product right hand side
+        arrow_idx (int, optional): arrow index - from left to right. Defaults to None.
+            None implies no arrows
+        rect_idx (int, optional): rectangle index - from right to left. Defaults to 0.
+            None implies no rectangle
+    """
+
+    # Some setup stuff
+    plt.figure(figsize=(3,4), facecolor=background_color)
+    font_size = 15
+    plt.xlim((0,1))
+    plt.ylim((0,1))
+    plt.axis("off")
+
+    # Convert left and right terms to strings and add spaces to the LHS equal to len(RHS)
+    RHS = 4
+    text2 = str(RHS)
+    text1 = "0" * len(text2) + str(LHS)
+    times = r"\times"
+
+    # The desired answer
+    answer = str(LHS * RHS)
+    answer = "0" * (len(text1) - len(answer)) + answer
+    
+    # Get length of whole plotted string
+    length = len(text1) + 1 + len(text2)
+
+    # Get midpoint for x-axis and for y-axis
+    x_half = y_half = 0.5
+
+    # Generate indicies for the text to plot s.t. letters/numbers are evenly spaced and centered in the image
+    dist = 0.1
+    
+    idxes = [x_half - dist * (length/2 - (i + 0.6)) for i in range(length)]
+
+    # Plot LHS
+    for i, t in enumerate(text1):
+        plt.text(idxes[i], y_half, fr"${t}$", {"size":font_size}, ha="center", va="center", color=foreground_color)
+        
+    # Plot 'times' symbol
+    plt.text(idxes[len(text1)], y_half, fr"${times}$", {"size":font_size}, ha="center", va="center", color=foreground_color)
+
+    # Plot RHS
+    for i, t in enumerate(text2):
+        plt.text(idxes[i + 1 + len(text1)], y_half, fr"${t}$", {"size": font_size}, ha="center", va="center", color=foreground_color)
+        
+    # Underline for LHS product
+    plt.plot([idxes[0] - 0.02, idxes[len(text1) - 1] + 0.02], [y_half - 0.075, y_half- 0.075], color=foreground_color)
+
+    # Function for creating helper arrows
+    def plot_arrows(idx1, idx2, height=0.35):
+        """
+        idx1: idxes for the LHS of the \times are in [0, len(text1)]
+        idx2: idxes for the RHS of the \times are in [0, len(text2)]
+        height: how far up to go (0.4, 0.3 and 0.2 are good choices)
+        """
+        m = 0.8
+                
+        plt.arrow(idxes[idx1], y_half + height, 0, 0.95 * (0.1 - height), length_includes_head=True, head_width=0.015, color=foreground_color)
+        if (idx1 + 1) < len(text1):
+            plt.arrow(idxes[idx1+1], y_half + height, 0, 0.95 * (0.1 - height), length_includes_head=True, head_width=0.015, color=foreground_color)
+
+    # Plot answer up untill arrow_idx, plot the arrow_idx digit with bold
+    # Plot arrows according to the arrow indexing
+    if arrow_idx != None:
+        carry = 0
+        for i in range(len(text1) - arrow_idx):
+            digit = carry
+            idx = len(text1) - i - 1
+            if idx >= len(text1):
+                break
+            number = eval(text1[idx])
+            neighbor = 0
+            if (idx + 1) < len(text1):
+                neighbor = eval(text1[idx + 1])
+            
+            if i == 0:
+                digit += (10 - number) + 5 * (number % 2)
+            elif i == len(text1) - 1:
+                digit += int(neighbor/2) - 1
+            else:
+                digit += (9 - number) + int(neighbor/2) + 5 * (number % 2)            
+            
+            digit = str(digit) if digit >= 10 else "0" + str(digit)
+            plt.text(idxes[len(text1) - 1 - i], y_half - 0.2, fr"${digit[1]}$", {"size": font_size}, ha="center", va="center", color=foreground_color)
+            
+            # Plot carry dots
+            if i < len(text1) - 1:
+                if eval(digit[0]) == 1:
+                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                    carry = 1
+                elif eval(digit[0]) == 2:
+                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                    plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                    carry = 2
+                else:
+                    carry = 0
+    
+        for i in range(len(text2)):
+            if (arrow_idx + i) >= len(text1):
+                break
+            plot_arrows(arrow_idx + i, len(text2) - i - 1, height=(0.35 - 0.075*i))
+
+    return idxes
+
+
+def prod_plotter_5(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/255, 1), foreground_color=(0,0,0), step_by_step=False):
+    """Plots product of LHS and RHS, possibly with arrows to indicate 
+    next move / an error
+
+    Args:
+        LHS (int): The product left hand side
+        RHS (int): The product right hand side
+        arrow_idx (int, optional): arrow index - from left to right. Defaults to None.
+            None implies no arrows
+        rect_idx (int, optional): rectangle index - from right to left. Defaults to 0.
+            None implies no rectangle
+    """
+
+    # Some setup stuff
+    plt.figure(figsize=(3,4), facecolor=background_color)
+    font_size = 15
+    plt.xlim((0,1))
+    plt.ylim((0,1))
+    plt.axis("off")
+
+    # Convert left and right terms to strings and add spaces to the LHS equal to len(RHS)
+    RHS = 5
+    text2 = str(RHS)
+    text1 = "0" * len(text2) + str(LHS)
+    times = r"\times"
+
+    # The desired answer
+    answer = str(LHS * RHS)
+    answer = "0" * (len(text1) - len(answer)) + answer
+    
+    # Get length of whole plotted string
+    length = len(text1) + 1 + len(text2)
+
+    # Get midpoint for x-axis and for y-axis
+    x_half = y_half = 0.5
+
+    # Generate indicies for the text to plot s.t. letters/numbers are evenly spaced and centered in the image
+    dist = 0.1
+    
+    idxes = [x_half - dist * (length/2 - (i + 0.6)) for i in range(length)]
+
+    # Plot LHS
+    for i, t in enumerate(text1):
+        plt.text(idxes[i], y_half, fr"${t}$", {"size":font_size}, ha="center", va="center", color=foreground_color)
+        
+    # Plot 'times' symbol
+    plt.text(idxes[len(text1)], y_half, fr"${times}$", {"size":font_size}, ha="center", va="center", color=foreground_color)
+
+    # Plot RHS
+    for i, t in enumerate(text2):
+        plt.text(idxes[i + 1 + len(text1)], y_half, fr"${t}$", {"size": font_size}, ha="center", va="center", color=foreground_color)
+        
+    # Underline for LHS product
+    plt.plot([idxes[0] - 0.02, idxes[len(text1) - 1] + 0.02], [y_half - 0.075, y_half- 0.075], color=foreground_color)
+
+    # Function for creating helper arrows
+    def plot_arrows(idx1, idx2, height=0.35):
+        """
+        idx1: idxes for the LHS of the \times are in [0, len(text1)]
+        idx2: idxes for the RHS of the \times are in [0, len(text2)]
+        height: how far up to go (0.4, 0.3 and 0.2 are good choices)
+        """
+        m = 0.8
+                
+        plt.arrow(idxes[idx1], y_half + height, 0, 0.95 * (0.1 - height), length_includes_head=True, head_width=0.015, color=foreground_color)
+        if (idx1 + 1) < len(text1):
+            plt.arrow(idxes[idx1+1], y_half + height, 0, 0.95 * (0.1 - height), length_includes_head=True, head_width=0.015, color=foreground_color)
+
+    # Plot answer up untill arrow_idx, plot the arrow_idx digit with bold
+    # Plot arrows according to the arrow indexing
+    if arrow_idx != None:
+        carry = 0
+        for i in range(len(text1) - arrow_idx):
+            digit = carry
+            idx = len(text1) - i - 1
+            if idx >= len(text1):
+                break
+            number = eval(text1[idx])
+            neighbor = 0
+            if (idx + 1) < len(text1):
+                neighbor = eval(text1[idx + 1])
+            
+            digit += int(neighbor/2) + 5 * (number % 2)
+            
+            digit = str(digit) if digit >= 10 else "0" + str(digit)
+            plt.text(idxes[len(text1) - 1 - i], y_half - 0.2, fr"${digit[1]}$", {"size": font_size}, ha="center", va="center", color=foreground_color)
+            
+            # Plot carry dots
+            if eval(digit[0]) == 1:
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                carry = 1
+            elif eval(digit[0]) == 2:
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                carry = 2
+            else:
+                carry = 0
+    
+        for i in range(len(text2)):
+            if (arrow_idx + i) >= len(text1):
+                break
+            plot_arrows(arrow_idx + i, len(text2) - i - 1, height=(0.35 - 0.075*i))
+
+    return idxes
+
+
+def prod_plotter_6(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/255, 1), foreground_color=(0,0,0), step_by_step=False):
+    """Plots product of LHS and RHS, possibly with arrows to indicate 
+    next move / an error
+
+    Args:
+        LHS (int): The product left hand side
+        RHS (int): The product right hand side
+        arrow_idx (int, optional): arrow index - from left to right. Defaults to None.
+            None implies no arrows
+        rect_idx (int, optional): rectangle index - from right to left. Defaults to 0.
+            None implies no rectangle
+    """
+
+    # Some setup stuff
+    plt.figure(figsize=(3,4), facecolor=background_color)
+    font_size = 15
+    plt.xlim((0,1))
+    plt.ylim((0,1))
+    plt.axis("off")
+
+    # Convert left and right terms to strings and add spaces to the LHS equal to len(RHS)
+    RHS = 6
+    text2 = str(RHS)
+    text1 = "0" * len(text2) + str(LHS)
+    times = r"\times"
+
+    # The desired answer
+    answer = str(LHS * RHS)
+    answer = "0" * (len(text1) - len(answer)) + answer
+    
+    # Get length of whole plotted string
+    length = len(text1) + 1 + len(text2)
+
+    # Get midpoint for x-axis and for y-axis
+    x_half = y_half = 0.5
+
+    # Generate indicies for the text to plot s.t. letters/numbers are evenly spaced and centered in the image
+    dist = 0.1
+    
+    idxes = [x_half - dist * (length/2 - (i + 0.6)) for i in range(length)]
+
+    # Plot LHS
+    for i, t in enumerate(text1):
+        plt.text(idxes[i], y_half, fr"${t}$", {"size":font_size}, ha="center", va="center", color=foreground_color)
+        
+    # Plot 'times' symbol
+    plt.text(idxes[len(text1)], y_half, fr"${times}$", {"size":font_size}, ha="center", va="center", color=foreground_color)
+
+    # Plot RHS
+    for i, t in enumerate(text2):
+        plt.text(idxes[i + 1 + len(text1)], y_half, fr"${t}$", {"size": font_size}, ha="center", va="center", color=foreground_color)
+        
+    # Underline for LHS product
+    plt.plot([idxes[0] - 0.02, idxes[len(text1) - 1] + 0.02], [y_half - 0.075, y_half- 0.075], color=foreground_color)
+
+    # Function for creating helper arrows
+    def plot_arrows(idx1, idx2, height=0.35):
+        """
+        idx1: idxes for the LHS of the \times are in [0, len(text1)]
+        idx2: idxes for the RHS of the \times are in [0, len(text2)]
+        height: how far up to go (0.4, 0.3 and 0.2 are good choices)
+        """
+        m = 0.8
+                
+        plt.arrow(idxes[idx1], y_half + height, 0, 0.95 * (0.1 - height), length_includes_head=True, head_width=0.015, color=foreground_color)
+        if (idx1 + 1) < len(text1):
+            plt.arrow(idxes[idx1+1], y_half + height, 0, 0.95 * (0.1 - height), length_includes_head=True, head_width=0.015, color=foreground_color)
+
+    # Plot answer up untill arrow_idx, plot the arrow_idx digit with bold
+    # Plot arrows according to the arrow indexing
+    if arrow_idx != None:
+        carry = 0
+        for i in range(len(text1) - arrow_idx):
+            digit = carry
+            idx = len(text1) - i - 1
+            if idx >= len(text1):
+                break
+            number = eval(text1[idx])
+            neighbor = 0
+            if (idx + 1) < len(text1):
+                neighbor = eval(text1[idx + 1])
+            
+            digit += number + int(neighbor/2) + 5 * (number % 2)
+            
+            digit = str(digit) if digit >= 10 else "0" + str(digit)
+            plt.text(idxes[len(text1) - 1 - i], y_half - 0.2, fr"${digit[1]}$", {"size": font_size}, ha="center", va="center", color=foreground_color)
+            
+            # Plot carry dots
+            if eval(digit[0]) == 1:
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                carry = 1
+            elif eval(digit[0]) == 2:
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                carry = 2
+            else:
+                carry = 0
+    
+        for i in range(len(text2)):
+            if (arrow_idx + i) >= len(text1):
+                break
+            plot_arrows(arrow_idx + i, len(text2) - i - 1, height=(0.35 - 0.075*i))
+
+    return idxes
+
+
+def prod_plotter_7(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/255, 1), foreground_color=(0,0,0), step_by_step=False):
+    """Plots product of LHS and RHS, possibly with arrows to indicate 
+    next move / an error
+
+    Args:
+        LHS (int): The product left hand side
+        RHS (int): The product right hand side
+        arrow_idx (int, optional): arrow index - from left to right. Defaults to None.
+            None implies no arrows
+        rect_idx (int, optional): rectangle index - from right to left. Defaults to 0.
+            None implies no rectangle
+    """
+
+    # Some setup stuff
+    plt.figure(figsize=(3,4), facecolor=background_color)
+    font_size = 15
+    plt.xlim((0,1))
+    plt.ylim((0,1))
+    plt.axis("off")
+
+    # Convert left and right terms to strings and add spaces to the LHS equal to len(RHS)
+    RHS = 7
+    text2 = str(RHS)
+    text1 = "0" * len(text2) + str(LHS)
+    times = r"\times"
+
+    # The desired answer
+    answer = str(LHS * RHS)
+    answer = "0" * (len(text1) - len(answer)) + answer
+    
+    # Get length of whole plotted string
+    length = len(text1) + 1 + len(text2)
+
+    # Get midpoint for x-axis and for y-axis
+    x_half = y_half = 0.5
+
+    # Generate indicies for the text to plot s.t. letters/numbers are evenly spaced and centered in the image
+    dist = 0.1
+    
+    idxes = [x_half - dist * (length/2 - (i + 0.6)) for i in range(length)]
+
+    # Plot LHS
+    for i, t in enumerate(text1):
+        plt.text(idxes[i], y_half, fr"${t}$", {"size":font_size}, ha="center", va="center", color=foreground_color)
+        
+    # Plot 'times' symbol
+    plt.text(idxes[len(text1)], y_half, fr"${times}$", {"size":font_size}, ha="center", va="center", color=foreground_color)
+
+    # Plot RHS
+    for i, t in enumerate(text2):
+        plt.text(idxes[i + 1 + len(text1)], y_half, fr"${t}$", {"size": font_size}, ha="center", va="center", color=foreground_color)
+        
+    # Underline for LHS product
+    plt.plot([idxes[0] - 0.02, idxes[len(text1) - 1] + 0.02], [y_half - 0.075, y_half- 0.075], color=foreground_color)
+
+    # Function for creating helper arrows
+    def plot_arrows(idx1, idx2, height=0.35):
+        """
+        idx1: idxes for the LHS of the \times are in [0, len(text1)]
+        idx2: idxes for the RHS of the \times are in [0, len(text2)]
+        height: how far up to go (0.4, 0.3 and 0.2 are good choices)
+        """
+        m = 0.8
+                
+        plt.arrow(idxes[idx1], y_half + height, 0, 0.95 * (0.1 - height), length_includes_head=True, head_width=0.015, color=foreground_color)
+        if (idx1 + 1) < len(text1):
+            plt.arrow(idxes[idx1+1], y_half + height, 0, 0.95 * (0.1 - height), length_includes_head=True, head_width=0.015, color=foreground_color)
+
+    # Plot answer up untill arrow_idx, plot the arrow_idx digit with bold
+    # Plot arrows according to the arrow indexing
+    if arrow_idx != None:
+        carry = 0
+        for i in range(len(text1) - arrow_idx):
+            digit = carry
+            idx = len(text1) - i - 1
+            if idx >= len(text1):
+                break
+            number = eval(text1[idx])
+            neighbor = 0
+            if (idx + 1) < len(text1):
+                neighbor = eval(text1[idx + 1])
+            
+            digit += 2 * number + int(neighbor/2) + 5 * (number % 2)
+            
+            digit = str(digit) if digit >= 10 else "0" + str(digit)
+            plt.text(idxes[len(text1) - 1 - i], y_half - 0.2, fr"${digit[1]}$", {"size": font_size}, ha="center", va="center", color=foreground_color)
+            
+            # Plot carry dots
+            if eval(digit[0]) == 1:
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                carry = 1
+            elif eval(digit[0]) == 2:
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                carry = 2
+            else:
+                carry = 0
+    
+        for i in range(len(text2)):
+            if (arrow_idx + i) >= len(text1):
+                break
+            plot_arrows(arrow_idx + i, len(text2) - i - 1, height=(0.35 - 0.075*i))
+
+    return idxes
+
+
+def prod_plotter_8(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/255, 1), foreground_color=(0,0,0), step_by_step=False):
+    """Plots product of LHS and RHS, possibly with arrows to indicate 
+    next move / an error
+
+    Args:
+        LHS (int): The product left hand side
+        RHS (int): The product right hand side
+        arrow_idx (int, optional): arrow index - from left to right. Defaults to None.
+            None implies no arrows
+        rect_idx (int, optional): rectangle index - from right to left. Defaults to 0.
+            None implies no rectangle
+    """
+
+    # Some setup stuff
+    plt.figure(figsize=(3,4), facecolor=background_color)
+    font_size = 15
+    plt.xlim((0,1))
+    plt.ylim((0,1))
+    plt.axis("off")
+
+    # Convert left and right terms to strings and add spaces to the LHS equal to len(RHS)
+    RHS = 8
+    text2 = str(RHS)
+    text1 = "0" * len(text2) + str(LHS)
+    times = r"\times"
+
+    # The desired answer
+    answer = str(LHS * RHS)
+    answer = "0" * (len(text1) - len(answer)) + answer
+    
+    # Get length of whole plotted string
+    length = len(text1) + 1 + len(text2)
+
+    # Get midpoint for x-axis and for y-axis
+    x_half = y_half = 0.5
+
+    # Generate indicies for the text to plot s.t. letters/numbers are evenly spaced and centered in the image
+    dist = 0.1
+    
+    idxes = [x_half - dist * (length/2 - (i + 0.6)) for i in range(length)]
+
+    # Plot LHS
+    for i, t in enumerate(text1):
+        plt.text(idxes[i], y_half, fr"${t}$", {"size":font_size}, ha="center", va="center", color=foreground_color)
+        
+    # Plot 'times' symbol
+    plt.text(idxes[len(text1)], y_half, fr"${times}$", {"size":font_size}, ha="center", va="center", color=foreground_color)
+
+    # Plot RHS
+    for i, t in enumerate(text2):
+        plt.text(idxes[i + 1 + len(text1)], y_half, fr"${t}$", {"size": font_size}, ha="center", va="center", color=foreground_color)
+        
+    # Underline for LHS product
+    plt.plot([idxes[0] - 0.02, idxes[len(text1) - 1] + 0.02], [y_half - 0.075, y_half- 0.075], color=foreground_color)
+
+    # Function for creating helper arrows
+    def plot_arrows(idx1, idx2, height=0.35):
+        """
+        idx1: idxes for the LHS of the \times are in [0, len(text1)]
+        idx2: idxes for the RHS of the \times are in [0, len(text2)]
+        height: how far up to go (0.4, 0.3 and 0.2 are good choices)
+        """
+        m = 0.8
+                
+        plt.arrow(idxes[idx1], y_half + height, 0, 0.95 * (0.1 - height), length_includes_head=True, head_width=0.015, color=foreground_color)
+        if (idx1 + 1) < len(text1):
+            plt.arrow(idxes[idx1+1], y_half + height, 0, 0.95 * (0.1 - height), length_includes_head=True, head_width=0.015, color=foreground_color)
+
+    # Plot answer up untill arrow_idx, plot the arrow_idx digit with bold
+    # Plot arrows according to the arrow indexing
+    if arrow_idx != None:
+        carry = 0
+        for i in range(len(text1) - arrow_idx):
+            digit = carry
+            idx = len(text1) - i - 1
+            if idx >= len(text1):
+                break
+            number = eval(text1[idx])
+            neighbor = 0
+            if (idx + 1) < len(text1):
+                neighbor = eval(text1[idx + 1])
+            
+            if i == 0:
+                digit += 2 * (10 - number)
+            elif i == len(text1) - 1:
+                digit += neighbor - 2
+            else:
+                digit += 2 * (9 - number) + neighbor           
+            
+            digit = str(digit) if digit >= 10 else "0" + str(digit)
+            plt.text(idxes[len(text1) - 1 - i], y_half - 0.2, fr"${digit[1]}$", {"size": font_size}, ha="center", va="center", color=foreground_color)
+            
+            # Plot carry dots
+            if i < len(text1) - 1:
+                if eval(digit[0]) == 1:
+                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                    carry = 1
+                elif eval(digit[0]) == 2:
+                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                    plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                    carry = 2
+                else:
+                    carry = 0
+    
+        for i in range(len(text2)):
+            if (arrow_idx + i) >= len(text1):
+                break
+            plot_arrows(arrow_idx + i, len(text2) - i - 1, height=(0.35 - 0.075*i))
+
+    return idxes
+
+
+def prod_plotter_9(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/255, 1), foreground_color=(0,0,0), step_by_step=False):
+    """Plots product of LHS and RHS, possibly with arrows to indicate 
+    next move / an error
+
+    Args:
+        LHS (int): The product left hand side
+        RHS (int): The product right hand side
+        arrow_idx (int, optional): arrow index - from left to right. Defaults to None.
+            None implies no arrows
+        rect_idx (int, optional): rectangle index - from right to left. Defaults to 0.
+            None implies no rectangle
+    """
+
+    # Some setup stuff
+    plt.figure(figsize=(3,4), facecolor=background_color)
+    font_size = 15
+    plt.xlim((0,1))
+    plt.ylim((0,1))
+    plt.axis("off")
+
+    # Convert left and right terms to strings and add spaces to the LHS equal to len(RHS)
+    RHS = 9
+    text2 = str(RHS)
+    text1 = "0" * len(text2) + str(LHS)
+    times = r"\times"
+
+    # The desired answer
+    answer = str(LHS * RHS)
+    answer = "0" * (len(text1) - len(answer)) + answer
+    
+    # Get length of whole plotted string
+    length = len(text1) + 1 + len(text2)
+
+    # Get midpoint for x-axis and for y-axis
+    x_half = y_half = 0.5
+
+    # Generate indicies for the text to plot s.t. letters/numbers are evenly spaced and centered in the image
+    dist = 0.1
+    
+    idxes = [x_half - dist * (length/2 - (i + 0.6)) for i in range(length)]
+
+    # Plot LHS
+    for i, t in enumerate(text1):
+        plt.text(idxes[i], y_half, fr"${t}$", {"size":font_size}, ha="center", va="center", color=foreground_color)
+        
+    # Plot 'times' symbol
+    plt.text(idxes[len(text1)], y_half, fr"${times}$", {"size":font_size}, ha="center", va="center", color=foreground_color)
+
+    # Plot RHS
+    for i, t in enumerate(text2):
+        plt.text(idxes[i + 1 + len(text1)], y_half, fr"${t}$", {"size": font_size}, ha="center", va="center", color=foreground_color)
+        
+    # Underline for LHS product
+    plt.plot([idxes[0] - 0.02, idxes[len(text1) - 1] + 0.02], [y_half - 0.075, y_half- 0.075], color=foreground_color)
+
+    # Function for creating helper arrows
+    def plot_arrows(idx1, idx2, height=0.35):
+        """
+        idx1: idxes for the LHS of the \times are in [0, len(text1)]
+        idx2: idxes for the RHS of the \times are in [0, len(text2)]
+        height: how far up to go (0.4, 0.3 and 0.2 are good choices)
+        """
+        m = 0.8
+                
+        plt.arrow(idxes[idx1], y_half + height, 0, 0.95 * (0.1 - height), length_includes_head=True, head_width=0.015, color=foreground_color)
+        if (idx1 + 1) < len(text1):
+            plt.arrow(idxes[idx1+1], y_half + height, 0, 0.95 * (0.1 - height), length_includes_head=True, head_width=0.015, color=foreground_color)
+
+    # Plot answer up untill arrow_idx, plot the arrow_idx digit with bold
+    # Plot arrows according to the arrow indexing
+    if arrow_idx != None:
+        carry = 0
+        for i in range(len(text1) - arrow_idx):
+            digit = carry
+            idx = len(text1) - i - 1
+            if idx >= len(text1):
+                break
+            number = eval(text1[idx])
+            neighbor = 0
+            if (idx + 1) < len(text1):
+                neighbor = eval(text1[idx + 1])
+            
+            if i == 0:
+                digit += 10 - number
+            elif i == len(text1) - 1:
+                digit += neighbor - 1
+            else:
+                digit += (9 - number) + neighbor           
+            
+            digit = str(digit) if digit >= 10 else "0" + str(digit)
+            plt.text(idxes[len(text1) - 1 - i], y_half - 0.2, fr"${digit[1]}$", {"size": font_size}, ha="center", va="center", color=foreground_color)
+            
+            # Plot carry dots
+            if i < len(text1) - 1:
+                if eval(digit[0]) == 1:
+                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                    carry = 1
+                elif eval(digit[0]) == 2:
+                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                    plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                    carry = 2
+                else:
+                    carry = 0
+    
+        for i in range(len(text2)):
+            if (arrow_idx + i) >= len(text1):
+                break
+            plot_arrows(arrow_idx + i, len(text2) - i - 1, height=(0.35 - 0.075*i))
+
+    return idxes
+
+
+def prod_plotter_11(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/255, 1), foreground_color=(0,0,0), step_by_step=False):
+    """Plots product of LHS and RHS, possibly with arrows to indicate 
+    next move / an error
+
+    Args:
+        LHS (int): The product left hand side
+        RHS (int): The product right hand side
+        arrow_idx (int, optional): arrow index - from left to right. Defaults to None.
+            None implies no arrows
+        rect_idx (int, optional): rectangle index - from right to left. Defaults to 0.
+            None implies no rectangle
+    """
+
+    # Some setup stuff
+    plt.figure(figsize=(3,4), facecolor=background_color)
+    font_size = 15
+    plt.xlim((0,1))
+    plt.ylim((0,1))
+    plt.axis("off")
+
+    # Convert left and right terms to strings and add spaces to the LHS equal to len(RHS)
+    RHS = 11
+    text2 = str(RHS)
+    text1 = "0" * len(text2) + str(LHS)
+    times = r"\times"
+
+    # The desired answer
+    answer = str(LHS * RHS)
+    answer = "0" * (len(text1) - len(answer)) + answer
+    
+    # Get length of whole plotted string
+    length = len(text1) + 1 + len(text2)
+
+    # Get midpoint for x-axis and for y-axis
+    x_half = y_half = 0.5
+
+    # Generate indicies for the text to plot s.t. letters/numbers are evenly spaced and centered in the image
+    dist = 0.1
+    
+    idxes = [x_half - dist * (length/2 - (i + 0.6)) for i in range(length)]
+
+    # Plot LHS
+    for i, t in enumerate(text1):
+        plt.text(idxes[i], y_half, fr"${t}$", {"size":font_size}, ha="center", va="center", color=foreground_color)
+        
+    # Plot 'times' symbol
+    plt.text(idxes[len(text1)], y_half, fr"${times}$", {"size":font_size}, ha="center", va="center", color=foreground_color)
+
+    # Plot RHS
+    for i, t in enumerate(text2):
+        plt.text(idxes[i + 1 + len(text1)], y_half, fr"${t}$", {"size": font_size}, ha="center", va="center", color=foreground_color)
+        
+    # Underline for LHS product
+    plt.plot([idxes[0] - 0.02, idxes[len(text1) - 1] + 0.02], [y_half - 0.075, y_half- 0.075], color=foreground_color)
+
+    # Function for creating helper arrows
+    def plot_arrows(idx1, idx2, height=0.35):
+        """
+        idx1: idxes for the LHS of the \times are in [0, len(text1)]
+        idx2: idxes for the RHS of the \times are in [0, len(text2)]
+        height: how far up to go (0.4, 0.3 and 0.2 are good choices)
+        """
+        m = 0.8
+                
+        plt.arrow(idxes[idx1], y_half + height, 0, 0.95 * (0.1 - height), length_includes_head=True, head_width=0.015, color=foreground_color)
+        if (idx1 + 1) < len(text1):
+            plt.arrow(idxes[idx1+1], y_half + height, 0, 0.95 * (0.1 - height), length_includes_head=True, head_width=0.015, color=foreground_color)
+
+    # Plot answer up untill arrow_idx, plot the arrow_idx digit with bold
+    # Plot arrows according to the arrow indexing
+    if arrow_idx != None:
+        carry = 0
+        for i in range(len(text1) - arrow_idx):
+            digit = carry
+            idx = len(text1) - i - 1
+            if idx >= len(text1):
+                break
+            number = eval(text1[idx])
+            neighbor = 0
+            if (idx + 1) < len(text1):
+                neighbor = eval(text1[idx + 1])
+            
+            digit += number + neighbor
+            
+            digit = str(digit) if digit >= 10 else "0" + str(digit)
+            plt.text(idxes[len(text1) - 1 - i], y_half - 0.2, fr"${digit[1]}$", {"size": font_size}, ha="center", va="center", color=foreground_color)
+            
+            # Plot carry dots
+            if eval(digit[0]) == 1:
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                carry = 1
+            elif eval(digit[0]) == 2:
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                carry = 2
+            else:
+                carry = 0
+    
+        for i in range(1):
+            if (arrow_idx + i) >= len(text1):
+                break
+            plot_arrows(arrow_idx + i, len(text2) - i - 1, height=(0.35 - 0.075*i))
+
+    return idxes
+
+
+def prod_plotter_12(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/255, 1), foreground_color=(0,0,0), step_by_step=False):
+    """Plots product of LHS and RHS, possibly with arrows to indicate 
+    next move / an error
+
+    Args:
+        LHS (int): The product left hand side
+        RHS (int): The product right hand side
+        arrow_idx (int, optional): arrow index - from left to right. Defaults to None.
+            None implies no arrows
+        rect_idx (int, optional): rectangle index - from right to left. Defaults to 0.
+            None implies no rectangle
+    """
+
+    # Some setup stuff
+    plt.figure(figsize=(3,4), facecolor=background_color)
+    font_size = 15
+    plt.xlim((0,1))
+    plt.ylim((0,1))
+    plt.axis("off")
+
+    # Convert left and right terms to strings and add spaces to the LHS equal to len(RHS)
+    RHS = 12
+    text2 = str(RHS)
+    text1 = "0" * len(text2) + str(LHS)
+    times = r"\times"
+
+    # The desired answer
+    answer = str(LHS * RHS)
+    answer = "0" * (len(text1) - len(answer)) + answer
+    
+    # Get length of whole plotted string
+    length = len(text1) + 1 + len(text2)
+
+    # Get midpoint for x-axis and for y-axis
+    x_half = y_half = 0.5
+
+    # Generate indicies for the text to plot s.t. letters/numbers are evenly spaced and centered in the image
+    dist = 0.1
+    
+    idxes = [x_half - dist * (length/2 - (i + 0.6)) for i in range(length)]
+
+    # Plot LHS
+    for i, t in enumerate(text1):
+        plt.text(idxes[i], y_half, fr"${t}$", {"size":font_size}, ha="center", va="center", color=foreground_color)
+        
+    # Plot 'times' symbol
+    plt.text(idxes[len(text1)], y_half, fr"${times}$", {"size":font_size}, ha="center", va="center", color=foreground_color)
+
+    # Plot RHS
+    for i, t in enumerate(text2):
+        plt.text(idxes[i + 1 + len(text1)], y_half, fr"${t}$", {"size": font_size}, ha="center", va="center", color=foreground_color)
+        
+    # Underline for LHS product
+    plt.plot([idxes[0] - 0.02, idxes[len(text1) - 1] + 0.02], [y_half - 0.075, y_half- 0.075], color=foreground_color)
+
+    # Function for creating helper arrows
+    def plot_arrows(idx1, idx2, height=0.35):
+        """
+        idx1: idxes for the LHS of the \times are in [0, len(text1)]
+        idx2: idxes for the RHS of the \times are in [0, len(text2)]
+        height: how far up to go (0.4, 0.3 and 0.2 are good choices)
+        """
+        m = 0.8
+                
+        plt.arrow(idxes[idx1], y_half + height, 0, 0.95 * (0.1 - height), length_includes_head=True, head_width=0.015, color=foreground_color)
+        if (idx1 + 1) < len(text1):
+            plt.arrow(idxes[idx1+1], y_half + height, 0, 0.95 * (0.1 - height), length_includes_head=True, head_width=0.015, color=foreground_color)
+
+    # Plot answer up untill arrow_idx, plot the arrow_idx digit with bold
+    # Plot arrows according to the arrow indexing
+    if arrow_idx != None:
+        carry = 0
+        for i in range(len(text1) - arrow_idx):
+            digit = carry
+            idx = len(text1) - i - 1
+            if idx >= len(text1):
+                break
+            number = eval(text1[idx])
+            neighbor = 0
+            if (idx + 1) < len(text1):
+                neighbor = eval(text1[idx + 1])
+            
+            digit += 2*number + neighbor
+            
+            digit = str(digit) if digit >= 10 else "0" + str(digit)
+            plt.text(idxes[len(text1) - 1 - i], y_half - 0.2, fr"${digit[1]}$", {"size": font_size}, ha="center", va="center", color=foreground_color)
+            
+            # Plot carry dots
+            if eval(digit[0]) == 1:
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                carry = 1
+            elif eval(digit[0]) == 2:
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                carry = 2
+            else:
+                carry = 0
+    
+        for i in range(1):
+            if (arrow_idx + i) >= len(text1):
+                break
+            plot_arrows(arrow_idx + i, len(text2) - i - 1, height=(0.35 - 0.075*i))
+
+    return idxes
+
+
+
 
 # Navigation manager
 class WindowManager(ScreenManager):
@@ -189,6 +1266,412 @@ class MainWindowScreen(Screen):
 class MainWindow(Widget):
     pass
 
+# Explainer functions
+# UT - multiplitcation
+def explainer_func_ut(arrow_idx, LHS_str, RHS_str, answer):
+    explainer_str = ""
+    # answer = "0" * (len(str(self.LHS) + str(self.RHS)) - len(str(self.answer))) + str(self.answer)
+    # RHS_str = str(self.RHS)
+    # LHS_str = "0" * len(RHS_str) + str(self.LHS)
+    
+    # For loop, generating explanation for how current digit is found 
+    res = []
+    for i in range(len(RHS_str)):
+        idx = arrow_idx + i
+        if idx >= len(LHS_str):
+            break
+        mult_1 = str(eval(LHS_str[idx]) * eval(RHS_str[len(RHS_str) - i - 1]))
+        mult_1 = "0" + mult_1 if len(mult_1) == 1 else mult_1
+        res += [eval(mult_1[1])]
+        explainer_str += f"{LHS_str[idx]} times {RHS_str[len(RHS_str) - i - 1]} is {mult_1[0]}[u]{mult_1[1]}[/u]"
+        if (idx + 1) >= len(LHS_str):
+            break
+        explainer_str = explainer_str + ", "
+        mult_2 = str(eval(LHS_str[idx + 1]) * eval(RHS_str[len(RHS_str) - i - 1]))
+        mult_2 = "0" + mult_2 if len(mult_2) == 1 else mult_2
+        res += [eval(mult_2[0])]
+        explainer_str += f"{LHS_str[idx + 1]} times {RHS_str[len(RHS_str) - i - 1]} is [u]{mult_2[0]}[/u]{mult_2[1]}\n"
+    if sum(res) % 10 != eval(answer[arrow_idx]):
+        carry = (eval(answer[arrow_idx]) - sum(res)) % 10
+        explainer_str += f"Add carried [u]{carry}[/u]"
+        res += [carry]
+    sum_res = str(sum(res))
+    explainer_str += "\n"
+    explainer_str += "+".join([str(r) for r in res]) + " = " 
+    explainer_str = explainer_str + f"[u]{sum_res}[/u]" if len(sum_res) == 1 else explainer_str + f"{sum_res[0]}[u]{sum_res[1]}[/u]"
+    
+    return explainer_str
+
+# Multiplication by 2
+def explainer_func_2(arrow_idx, LHS_str, answer):
+    explainer_str = ""
+    # answer = "0" * (len(str(self.LHS) + str(self.RHS)) - len(str(self.answer))) + str(self.answer)
+    # RHS_str = str(self.RHS)
+    # LHS_str = "0" * len(RHS_str) + str(self.LHS)
+    
+    # For loop, generating explanation for how current digit is found 
+    res = []
+    idx = arrow_idx
+    mult = str(eval(LHS_str[idx]) * 2)
+    mult = "0" + mult if len(mult) == 1 else mult
+    res += [eval(mult[1])]
+    explainer_str += f"{LHS_str[idx]} times 2 is {mult[0]}[u]{mult[1]}[/u]"
+
+    if sum(res) % 10 != eval(answer[arrow_idx]):
+        carry = (eval(answer[arrow_idx]) - sum(res)) % 10
+        explainer_str += f", Add carried [u]{carry}[/u]"
+        res += [carry]
+    sum_res = str(sum(res))
+    explainer_str += "\n"
+    explainer_str += "+".join([str(r) for r in res]) + " = " 
+    explainer_str = explainer_str + f"[u]{sum_res}[/u]" if len(sum_res) == 1 else explainer_str + f"{sum_res[0]}[u]{sum_res[1]}[/u]"
+    
+    return explainer_str
+
+# Multiplication by 3
+def explainer_func_3(arrow_idx, LHS_str, answer):
+    explainer_str = ""
+    # answer = "0" * (len(str(self.LHS) + str(self.RHS)) - len(str(self.answer))) + str(self.answer)
+    # RHS_str = str(self.RHS)
+    # LHS_str = "0" * len(RHS_str) + str(self.LHS)
+    
+    # For loop, generating explanation for how current digit is found 
+    res = []
+    idx = arrow_idx
+    if idx == len(LHS_str) - 1:
+        temp = 2 * (10 - eval(LHS_str[idx])) + 5 * (eval(LHS_str[idx]) % 2)
+        res.append(temp)
+        explainer_str += f"2 times (10 minus {LHS_str[idx]})"
+        if eval(LHS_str[idx]) % 2 == 1:
+            explainer_str += " plus 5"
+        explainer_str += f" equals {temp}"
+    elif idx == 0:
+        temp = int(eval(LHS_str[idx + 1])/2 - 2)
+        res.append(temp)
+        explainer_str += f"half of {LHS_str[idx + 1]} minus 2 equals {temp}"
+    else:
+        temp = 2 * (9 - int(eval(LHS_str[idx]))) + int(eval(LHS_str[idx + 1])/2) + 5 * (eval(LHS_str[idx]) % 2)
+        res.append(temp)
+        explainer_str += f"2 times (9 minus {LHS_str[idx]}) plus half {LHS_str[idx + 1]}"
+        if eval(LHS_str[idx]) % 2 == 1:
+            explainer_str += " plus 5"
+        explainer_str += f" equals {temp}"
+    
+    # Add carry if necessary
+    temp = str(res[-1]); temp = "0" + temp if len(temp) <= 1 else temp;
+    carry = (eval(answer[idx]) - eval(temp[1])) % 10
+    print(carry)
+    if carry > 0:
+        res.append(carry)
+        explainer_str += f"\nAdd carried [u]{carry}[/u]"
+    
+    sum_res = str(sum(res))
+    explainer_str += "\n"
+    explainer_str += "+".join([str(r) for r in res]) + " = " 
+    explainer_str = explainer_str + f"[u]{sum_res}[/u]" if len(sum_res) == 1 else explainer_str + f"{sum_res[0]}[u]{sum_res[1]}[/u]"
+    
+    return explainer_str
+
+# Multiplication by 4
+def explainer_func_4(arrow_idx, LHS_str, answer):
+    explainer_str = ""
+    # answer = "0" * (len(str(self.LHS) + str(self.RHS)) - len(str(self.answer))) + str(self.answer)
+    # RHS_str = str(self.RHS)
+    # LHS_str = "0" * len(RHS_str) + str(self.LHS)
+    
+    # For loop, generating explanation for how current digit is found 
+    res = []
+    idx = arrow_idx
+    if idx == len(LHS_str) - 1:
+        temp = (10 - eval(LHS_str[idx])) + 5 * (eval(LHS_str[idx]) % 2)
+        res.append(temp)
+        explainer_str += f"10 minus {LHS_str[idx]}"
+        if eval(LHS_str[idx]) % 2 == 1:
+            explainer_str += " plus 5"
+        explainer_str += f" equals {temp}"
+    elif idx == 0:
+        temp = int(eval(LHS_str[idx + 1])/2 - 1)
+        res.append(temp)
+        explainer_str += f"half of {LHS_str[idx + 1]} minus 1 equals {temp}"
+    else:
+        temp = (9 - int(eval(LHS_str[idx]))) + int(eval(LHS_str[idx + 1])/2) + 5 * (eval(LHS_str[idx]) % 2)
+        res.append(temp)
+        explainer_str += f"9 minus {LHS_str[idx]} plus half {LHS_str[idx + 1]}"
+        if eval(LHS_str[idx]) % 2 == 1:
+            explainer_str += " plus 5"
+        explainer_str += f" equals {temp}"
+    
+    # Add carry if necessary
+    temp = str(res[-1]); temp = "0" + temp if len(temp) <= 1 else temp;
+    carry = (eval(answer[idx]) - eval(temp[1])) % 10
+    print(carry)
+    if carry > 0:
+        res.append(carry)
+        explainer_str += f"\nAdd carried [u]{carry}[/u]"
+    
+    sum_res = str(sum(res))
+    explainer_str += "\n"
+    explainer_str += "+".join([str(r) for r in res]) + " = " 
+    explainer_str = explainer_str + f"[u]{sum_res}[/u]" if len(sum_res) == 1 else explainer_str + f"{sum_res[0]}[u]{sum_res[1]}[/u]"
+    
+    return explainer_str
+
+# Multiplication by 5
+def explainer_func_5(arrow_idx, LHS_str, answer):
+    explainer_str = ""
+    # answer = "0" * (len(str(self.LHS) + str(self.RHS)) - len(str(self.answer))) + str(self.answer)
+    # RHS_str = str(self.RHS)
+    # LHS_str = "0" * len(RHS_str) + str(self.LHS)
+    
+    # For loop, generating explanation for how current digit is found 
+    res = []
+    idx = arrow_idx
+    
+    number = eval(LHS_str[idx])
+    neighbor = 0
+    if idx < len(LHS_str) - 1:
+        neighbor = eval(LHS_str[idx + 1])
+    
+    temp = int(neighbor/2) + 5 * (number % 2)
+    res.append(temp)
+    explainer_str += f"half {neighbor}" + ("" if ((number % 2) == 0) else f" plus 5")
+    explainer_str += f" equals {temp}"
+    
+    # Add carry if necessary
+    temp = str(res[-1]); temp = "0" + temp if len(temp) <= 1 else temp;
+    carry = (eval(answer[idx]) - eval(temp[1])) % 10
+    print(carry)
+    if carry > 0:
+        res.append(carry)
+        explainer_str += f"\nAdd carried [u]{carry}[/u]"
+    
+    sum_res = str(sum(res))
+    explainer_str += "\n"
+    explainer_str += "+".join([str(r) for r in res]) + " = " 
+    explainer_str = explainer_str + f"[u]{sum_res}[/u]" if len(sum_res) == 1 else explainer_str + f"{sum_res[0]}[u]{sum_res[1]}[/u]"
+    
+    return explainer_str
+
+# Multiplication by 6
+def explainer_func_6(arrow_idx, LHS_str, answer):
+    explainer_str = ""
+    # answer = "0" * (len(str(self.LHS) + str(self.RHS)) - len(str(self.answer))) + str(self.answer)
+    # RHS_str = str(self.RHS)
+    # LHS_str = "0" * len(RHS_str) + str(self.LHS)
+    
+    # For loop, generating explanation for how current digit is found 
+    res = []
+    idx = arrow_idx
+    
+    number = eval(LHS_str[idx])
+    neighbor = 0
+    if idx < len(LHS_str) - 1:
+        neighbor = eval(LHS_str[idx + 1])
+    
+    temp = number + int(neighbor/2) + 5 * (number % 2)
+    res.append(temp)
+    explainer_str += f"{number} plus half {neighbor}" + ("" if ((number % 2) == 0) else f" plus 5")
+    explainer_str += f" equals {temp}"
+    
+    # Add carry if necessary
+    temp = str(res[-1]); temp = "0" + temp if len(temp) <= 1 else temp;
+    carry = (eval(answer[idx]) - eval(temp[1])) % 10
+    print(carry)
+    if carry > 0:
+        res.append(carry)
+        explainer_str += f"\nAdd carried [u]{carry}[/u]"
+    
+    sum_res = str(sum(res))
+    explainer_str += "\n"
+    explainer_str += "+".join([str(r) for r in res]) + " = " 
+    explainer_str = explainer_str + f"[u]{sum_res}[/u]" if len(sum_res) == 1 else explainer_str + f"{sum_res[0]}[u]{sum_res[1]}[/u]"
+    
+    return explainer_str
+
+# Multiplication by 7
+def explainer_func_7(arrow_idx, LHS_str, answer):
+    explainer_str = ""
+    # answer = "0" * (len(str(self.LHS) + str(self.RHS)) - len(str(self.answer))) + str(self.answer)
+    # RHS_str = str(self.RHS)
+    # LHS_str = "0" * len(RHS_str) + str(self.LHS)
+    
+    # For loop, generating explanation for how current digit is found 
+    res = []
+    idx = arrow_idx
+    
+    number = eval(LHS_str[idx])
+    neighbor = 0
+    if idx < len(LHS_str) - 1:
+        neighbor = eval(LHS_str[idx + 1])
+    
+    temp = 2 * number + int(neighbor/2) + 5 * (number % 2)
+    res.append(temp)
+    explainer_str += f"2 times {number} plus half {neighbor}" + ("" if ((number % 2) == 0) else f" plus 5")
+    explainer_str += f" equals {temp}"
+    
+    # Add carry if necessary
+    temp = str(res[-1]); temp = "0" + temp if len(temp) <= 1 else temp;
+    carry = (eval(answer[idx]) - eval(temp[1])) % 10
+    print(carry)
+    if carry > 0:
+        res.append(carry)
+        explainer_str += f"\nAdd carried [u]{carry}[/u]"
+    
+    sum_res = str(sum(res))
+    explainer_str += "\n"
+    explainer_str += "+".join([str(r) for r in res]) + " = " 
+    explainer_str = explainer_str + f"[u]{sum_res}[/u]" if len(sum_res) == 1 else explainer_str + f"{sum_res[0]}[u]{sum_res[1]}[/u]"
+    
+    return explainer_str
+
+# Multiplication by 8
+def explainer_func_8(arrow_idx, LHS_str, answer):
+    explainer_str = ""
+    # answer = "0" * (len(str(self.LHS) + str(self.RHS)) - len(str(self.answer))) + str(self.answer)
+    # RHS_str = str(self.RHS)
+    # LHS_str = "0" * len(RHS_str) + str(self.LHS)
+    
+    # For loop, generating explanation for how current digit is found 
+    res = []
+    idx = arrow_idx
+    if idx == len(LHS_str) - 1:
+        temp = 2 * (10 - eval(LHS_str[idx]))
+        res.append(temp)
+        explainer_str += f"2 times (10 minus {LHS_str[idx]}) equals {temp}"
+    elif idx == 0:
+        temp = eval(LHS_str[idx + 1]) - 2
+        res.append(temp)
+        explainer_str += f"{eval(LHS_str[idx + 1])} minus 2 equals {temp}"
+    else:
+        temp = 2 * (9 - eval(LHS_str[idx])) + eval(LHS_str[idx + 1])   
+        res.append(temp)
+        explainer_str += f"2 times (9 minus {eval(LHS_str[idx])}) plus {eval(LHS_str[idx + 1])} equals {temp}"
+    
+    # Add carry if necessary
+    temp = str(res[-1]); temp = "0" + temp if len(temp) <= 1 else temp;
+    carry = (eval(answer[idx]) - eval(temp[1])) % 10
+    print(carry)
+    if carry > 0:
+        res.append(carry)
+        explainer_str += f"\nAdd carried [u]{carry}[/u]"
+    
+    sum_res = str(sum(res))
+    explainer_str += "\n"
+    explainer_str += "+".join([str(r) for r in res]) + " = " 
+    explainer_str = explainer_str + f"[u]{sum_res}[/u]" if len(sum_res) == 1 else explainer_str + f"{sum_res[0]}[u]{sum_res[1]}[/u]"
+    
+    return explainer_str
+
+# Multiplication by 9
+def explainer_func_9(arrow_idx, LHS_str, answer):
+    explainer_str = ""
+    # answer = "0" * (len(str(self.LHS) + str(self.RHS)) - len(str(self.answer))) + str(self.answer)
+    # RHS_str = str(self.RHS)
+    # LHS_str = "0" * len(RHS_str) + str(self.LHS)
+    
+    # For loop, generating explanation for how current digit is found 
+    res = []
+    idx = arrow_idx
+    if idx == len(LHS_str) - 1:
+        temp = 10 - eval(LHS_str[idx])
+        res.append(temp)
+        explainer_str += f"10 minus {LHS_str[idx]} equals {temp}"
+    elif idx == 0:
+        temp = eval(LHS_str[idx + 1]) - 1
+        res.append(temp)
+        explainer_str += f"{eval(LHS_str[idx + 1])} minus 1 equals {temp}"
+    else:
+        temp = (9 - eval(LHS_str[idx])) + eval(LHS_str[idx + 1])   
+        res.append(temp)
+        explainer_str += f"(9 minus {eval(LHS_str[idx])}) plus {eval(LHS_str[idx + 1])} equals {temp}"
+    
+    # Add carry if necessary
+    temp = str(res[-1]); temp = "0" + temp if len(temp) <= 1 else temp;
+    carry = (eval(answer[idx]) - eval(temp[1])) % 10
+    print(carry)
+    if carry > 0:
+        res.append(carry)
+        explainer_str += f"\nAdd carried [u]{carry}[/u]"
+    
+    sum_res = str(sum(res))
+    explainer_str += "\n"
+    explainer_str += "+".join([str(r) for r in res]) + " = " 
+    explainer_str = explainer_str + f"[u]{sum_res}[/u]" if len(sum_res) == 1 else explainer_str + f"{sum_res[0]}[u]{sum_res[1]}[/u]"
+    
+    return explainer_str
+
+# Multiplication by 11
+def explainer_func_11(arrow_idx, LHS_str, answer):
+    explainer_str = ""
+    # answer = "0" * (len(str(self.LHS) + str(self.RHS)) - len(str(self.answer))) + str(self.answer)
+    # RHS_str = str(self.RHS)
+    # LHS_str = "0" * len(RHS_str) + str(self.LHS)
+    
+    # For loop, generating explanation for how current digit is found 
+    res = []
+    idx = arrow_idx
+    
+    number = eval(LHS_str[idx])
+    neighbor = 0
+    if idx < len(LHS_str) - 1:
+        neighbor = eval(LHS_str[idx + 1])
+    
+    temp = number + neighbor
+    res.append(temp)
+    explainer_str += f"{number} plus {neighbor} equals {temp}"
+    
+    # Add carry if necessary
+    temp = str(res[-1]); temp = "0" + temp if len(temp) <= 1 else temp;
+    carry = (eval(answer[idx]) - eval(temp[1])) % 10
+    print(carry)
+    if carry > 0:
+        res.append(carry)
+        explainer_str += f"\nAdd carried [u]{carry}[/u]"
+    
+    sum_res = str(sum(res))
+    explainer_str += "\n"
+    explainer_str += "+".join([str(r) for r in res]) + " = " 
+    explainer_str = explainer_str + f"[u]{sum_res}[/u]" if len(sum_res) == 1 else explainer_str + f"{sum_res[0]}[u]{sum_res[1]}[/u]"
+    
+    return explainer_str
+
+# Multiplication by 12
+def explainer_func_12(arrow_idx, LHS_str, answer):
+    explainer_str = ""
+    # answer = "0" * (len(str(self.LHS) + str(self.RHS)) - len(str(self.answer))) + str(self.answer)
+    # RHS_str = str(self.RHS)
+    # LHS_str = "0" * len(RHS_str) + str(self.LHS)
+    
+    # For loop, generating explanation for how current digit is found 
+    res = []
+    idx = arrow_idx
+    
+    number = eval(LHS_str[idx])
+    neighbor = 0
+    if idx < len(LHS_str) - 1:
+        neighbor = eval(LHS_str[idx + 1])
+    
+    temp = 2 * number + neighbor
+    res.append(temp)
+    explainer_str += f"(2 times {number}) plus {neighbor} equals {temp}"
+    
+    # Add carry if necessary
+    temp = str(res[-1]); temp = "0" + temp if len(temp) <= 1 else temp;
+    carry = (eval(answer[idx]) - eval(temp[1])) % 10
+    print(carry)
+    if carry > 0:
+        res.append(carry)
+        explainer_str += f"\nAdd carried [u]{carry}[/u]"
+    
+    sum_res = str(sum(res))
+    explainer_str += "\n"
+    explainer_str += "+".join([str(r) for r in res]) + " = " 
+    explainer_str = explainer_str + f"[u]{sum_res}[/u]" if len(sum_res) == 1 else explainer_str + f"{sum_res[0]}[u]{sum_res[1]}[/u]"
+    
+    return explainer_str
+
+
+# The multiplication class
 class UT_Mult(Widget):
     top = ObjectProperty(None)
     enter = ObjectProperty(None)
@@ -384,47 +1867,51 @@ class UT_Mult(Widget):
         RHS_str = str(self.RHS)
         LHS_str = "0" * len(RHS_str) + str(self.LHS)
         
-        # Plot steps ???
-        # if self.input_RHS:
-        #     if self.RHS == 2:
-        #         explainer_str = explainer_func_2(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
-        #         _ = prod_plotter_2(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
-        #     elif self.RHS == 3:
-        #         explainer_str = explainer_func_3(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
-        #         _ = prod_plotter_3(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
-        #     elif self.RHS == 4:
-        #         explainer_str = explainer_func_4(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
-        #         _ = prod_plotter_4(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
-        #     elif self.RHS == 5:
-        #         explainer_str = explainer_func_5(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
-        #         _ = prod_plotter_5(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
-        #     elif self.RHS == 6:
-        #         explainer_str = explainer_func_6(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
-        #         _ = prod_plotter_6(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
-        #     elif self.RHS == 7:
-        #         explainer_str = explainer_func_7(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
-        #         _ = prod_plotter_7(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
-        #     elif self.RHS == 8:
-        #         explainer_str = explainer_func_8(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
-        #         _ = prod_plotter_8(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
-        #     elif self.RHS == 9:
-        #         explainer_str = explainer_func_9(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
-        #         _ = prod_plotter_9(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
-        #     elif self.RHS == 11:
-        #         explainer_str = explainer_func_11(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
-        #         _ = prod_plotter_11(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
-        #     elif self.RHS == 12:
-        #         explainer_str = explainer_func_12(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
-        #         _ = prod_plotter_12(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
+        # Plot steps
+        if self.input_RHS:
+            pass
+            if self.RHS == 2:
+                explainer_str = explainer_func_2(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
+                _ = prod_plotter_2(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
+            elif self.RHS == 3:
+                explainer_str = explainer_func_3(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
+                _ = prod_plotter_3(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
+            elif self.RHS == 4:
+                explainer_str = explainer_func_4(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
+                _ = prod_plotter_4(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
+            elif self.RHS == 5:
+                explainer_str = explainer_func_5(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
+                _ = prod_plotter_5(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
+            elif self.RHS == 6:
+                explainer_str = explainer_func_6(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
+                _ = prod_plotter_6(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
+            elif self.RHS == 7:
+                explainer_str = explainer_func_7(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
+                _ = prod_plotter_7(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
+            elif self.RHS == 8:
+                explainer_str = explainer_func_8(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
+                _ = prod_plotter_8(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
+            elif self.RHS == 9:
+                explainer_str = explainer_func_9(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
+                _ = prod_plotter_9(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
+            elif self.RHS == 11:
+                explainer_str = explainer_func_11(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
+                _ = prod_plotter_11(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
+            elif self.RHS == 12:
+                explainer_str = explainer_func_12(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
+                _ = prod_plotter_12(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
+        else:
+            explainer_str = explainer_func_ut(arrow_idx, LHS_str, RHS_str, answer)
+            _ = prod_plotter(self.LHS, self.RHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
 
         
         self.fig_widget = FigureCanvasKivyAgg(plt.gcf(), size_hint = (0.6, 0.6), pos_hint={"x": 0.2, "top": 0.75})
         self.box.add_widget(self.fig_widget)
         
         
-        # Add to widget ???
-        # self.lab = Label(text=explainer_str, size_hint = (0.6, 0.2), pos_hint={"x": 0.2, "top": 0.85}, markup=True)
-        # self.box.add_widget(self.lab)
+        # Add to widget
+        self.lab = Label(text=explainer_str, size_hint = (0.6, 0.2), pos_hint={"x": 0.2, "top": 0.85}, markup=True)
+        self.box.add_widget(self.lab)
 
     # Go to next step in solution method
     def forward_popup(self, *args):
@@ -460,7 +1947,7 @@ class UT_Mult(Widget):
             # Forward button functionality
             self.forward_btn.bind(on_press=self.forward_popup)
             
-        # Button for going to next index
+        # Button for going to former index
         if self.popup_idx > 0:
             self.backward_btn = Button(text="B", size_hint=(0.1, 0.1), pos_hint={"x": 0.2, "top": 0.95})
             self.box.add_widget(self.backward_btn)
@@ -559,7 +2046,6 @@ class UT_Mult(Widget):
             app.root.current = "OneTwelve"
         else:
             app.root.current = "mult"
-
 
 class MultWindow(Screen):
     def go_to_hard(self):
@@ -676,16 +2162,6 @@ class UTInfoScreen(Screen):
         super().__init__(**kw)
         self.add_widget(UTInfo())
         
-
-
-
-
-
-class Test(Screen):
-    def __init__(self, **kw):
-        super().__init__(**kw)
-        plt.text(0.5,0.5,"HEYO!!!")
-        self.add_widget(FigureCanvasKivyAgg(plt.gcf()))
 
 
 # Get `kv` file
