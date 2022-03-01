@@ -1264,8 +1264,17 @@ class MainWindowScreen(Screen):
         self.add_widget(MainWindow())
 
 class MainWindow(Widget):
-    pass
-
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.counter = self.ids["counter"]
+        self.update_counter()
+        
+    def update_counter(self):
+        with open("./score.txt", "r") as f:
+            txt = f.read()
+            self.counter.text = f"Total multiplications solved\n[b]{txt}[/b]"
+        f.close()
+        
 # Explainer functions
 # UT - multiplitcation
 def explainer_func_ut(arrow_idx, LHS_str, RHS_str, answer):
@@ -1837,17 +1846,17 @@ class UT_Mult(Widget):
     # Goes to next multiplication
     def next_mult(self):
         # Get current score
-        # current_score = 0
-        # with open("./score.txt", "r") as f:
-        #     txt = f.read()
-        #     if txt != "":
-        #         current_score = eval(txt)
-        # f.close()
+        current_score = 0
+        with open("./score.txt", "r") as f:
+            txt = f.read()
+            if txt != "":
+                current_score = eval(txt)
+        f.close()
         
-        # # Add to score
-        # with open("./score.txt", "w") as f:
-        #     f.write(str(1 + current_score))
-        # f.close()
+        # Add to score
+        with open("./score.txt", "w") as f:
+            f.write(str(1 + current_score))
+        f.close()
         
         mod = 1000 if self.difficulty == 2 else (100 if self.difficulty == 1 else 20)
         self.idx = (self.idx + 1) % mod
