@@ -17,11 +17,32 @@ from kivy.uix.label import Label
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.widget import Widget
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.popup import Popup
+from kivy.uix.button import Button
+
 from kivy.properties import ObjectProperty
 
 # Set background RGBA color - should be a nice gray ???
 from kivy.core.window import Window
 Window.clearcolor = (192/255, 187/255, 178/255, 1)
+
+# Other imports
+import random
+
+# Global variables
+LHS_global = [v for v in range(1,1000)]
+random.shuffle(LHS_global)
+
+RHS_easy = [v for v in range(1,20)]
+random.shuffle(RHS_easy)
+
+RHS_medium = [v for v in range(1,100)]
+random.shuffle(RHS_medium)
+
+RHS_hard = [v for v in range(1,1000)]
+random.shuffle(RHS_hard)
+
+RHS_global = [RHS_easy, RHS_medium, RHS_hard]
 
 ##### Custom functions
 # Matplotlib UT-plotter
@@ -168,6 +189,410 @@ class MainWindowScreen(Screen):
 class MainWindow(Widget):
     pass
 
+class UT_Mult(Widget):
+    top = ObjectProperty(None)
+    enter = ObjectProperty(None)
+    
+    # Random idx
+    idx = 0
+    
+    def __init__(self, difficulty:int, RHS=None, **kwargs):
+        super().__init__()
+        plt.close()
+                
+        print("KWARGS", kwargs)
+        self.difficulty = difficulty
+        self.idx = self.idx % (1000 if self.difficulty == 2 else (100 if self.difficulty == 1 else 20))
+                
+        # Setting up the LHS and the RHS
+        self.max_num = 1000
+        if RHS:
+            self.RHS = RHS
+            self.input_RHS = True
+            self.LHS = LHS_global[(self.idx + 80 * RHS) % self.max_num]
+            
+            self.float_lay = self.ids["float_lay"]
+            btn = Button(text="Rule", pos_hint={"right": 0.5 + 0.175/2, "top": 0.99}, size_hint=(0.175,0.075), background_color=(0,0,1,3/4))
+            btn.bind(on_press=self.show_rule)
+            self.float_lay.add_widget(btn)
+        else:
+            self.RHS = RHS_global[difficulty][self.idx] # 0 is easy, 1 is medium, 2 is hard
+            self.input_RHS = False
+            self.LHS = LHS_global[(self.idx + 333 * difficulty) % self.max_num]
+        # Setting up user answer + real answer
+        self.number = ""
+        self.answer = self.LHS * self.RHS
+
+        # Store number of carry dots in array        
+        self.carries = [0 for _ in range(len(str(self.LHS) + str(self.RHS)))]
+        
+        # For popup
+        self.popup_idx = 0
+        
+        # Num btn presses
+        self.num_btn_presses = 0
+        
+        # Initialize plot 
+        self.CE()
+    
+    
+    # [1-9] digits
+    def btn(self, val):
+        print(val)
+        if self.num_btn_presses == 0:
+            self.CE()
+        self.num_btn_presses += 1
+            
+        if len(self.number) < len(str(self.LHS) + str(self.RHS)):
+            self.number = str(val) + self.number
+            self.plot_next_num(val)
+
+    # Plots the number typed and moves identifier rectangle 
+    def plot_next_num(self, val):
+        self.top.clear_widgets()
+        
+        # Fill over rect 
+        fill_rect = Rectangle((self.idxes[len(str(self.LHS) + str(self.RHS)) - len(self.number)] - 0.035 - 0.01, 0.5 - 0.28), 0.07 + 0.02, 0.195, facecolor=(192/255, 187/255, 178/255, 1), edgecolor=(192/255, 187/255, 178/255, 1), linewidth=2, zorder=1)
+        plt.gca().add_patch(fill_rect)
+        
+        # Plot 'val' 
+        plt.text(self.idxes[len(str(self.LHS) + str(self.RHS)) - len(self.number)] + 0.005, 0.5 - 0.2, str(val), {"size": 22}, ha="center", va="center", zorder=1)
+        
+        # Plot new rect 
+        if len(self.number) <= len(str(self.LHS) + str(self.RHS)) - 1:
+            rect = Rectangle((self.idxes[len(str(self.LHS) + str(self.RHS)) - len(self.number) - 1] - 0.03, 0.5 - 0.27), 0.06, 0.17, facecolor="none", edgecolor="black", linewidth=2, zorder=1)
+            plt.gca().add_patch(rect)
+                
+        # Plot new figure
+        self.top.add_widget(FigureCanvasKivyAgg(plt.gcf()))
+        
+    # Clear everything
+    def CE(self, *args):
+        print("CE")
+        
+        # Clear number
+        self.number = ""
+        # Clear carries
+        self.carries = [0 for _ in range(len(str(self.LHS) + str(self.RHS)))]
+        
+        self.top.clear_widgets()
+        self.idxes = prod_plotter(self.LHS, self.RHS)
+        self.top.add_widget(FigureCanvasKivyAgg(plt.gcf()))
+
+    # Go back once
+    def back(self): 
+        # Only delete if there are any numbers to delete
+        if len(self.number) > 0:
+            self.top.clear_widgets()
+            
+            # Fill over identifier rect and former number
+            fill_rect1 = Rectangle((self.idxes[len(str(self.LHS) + str(self.RHS)) - len(self.number)] - 0.03 - 0.01, 0.5 - 0.28), 0.06 + 0.02, 0.195, facecolor=(192/255, 187/255, 178/255, 1), edgecolor=(192/255, 187/255, 178/255, 1), linewidth=2, zorder=1)
+            fill_rect2 = Rectangle((self.idxes[len(str(self.LHS) + str(self.RHS)) - len(self.number) - 1] - 0.03 - 0.01, 0.5 - 0.28), 0.06 + 0.02, 0.195, facecolor=(192/255, 187/255, 178/255, 1), edgecolor=(192/255, 187/255, 178/255, 1), linewidth=2, zorder=1)
+            plt.gca().add_patch(fill_rect1)
+            plt.gca().add_patch(fill_rect2)
+        
+            # Plot new identifier rect
+            rect = Rectangle((self.idxes[len(str(self.LHS) + str(self.RHS)) - len(self.number)] - 0.035, 0.5 - 0.27), 0.07, 0.17, facecolor="none", edgecolor="black", linewidth=2, zorder=1)
+            plt.gca().add_patch(rect)
+        
+            # Reassign number
+            self.number = self.number[1:]
+            
+            # Reassign carry
+            self.carries[len(self.number)] = 0
+            
+            # Plot new figure
+            self.top.add_widget(FigureCanvasKivyAgg(plt.gcf()))
+
+            
+    # Add dot, to symbol a carry
+    def carry(self):
+        if self.carries[len(self.number) - 1] < 2 and len(self.number) >= 1:
+            print("Carry")
+            
+            # Clear current image
+            self.top.clear_widgets()
+            
+            # Plot carry dots
+            if int(self.carries[len(self.number) - 1]) == 0:
+                plt.text(self.idxes[len(str(self.LHS) + str(self.RHS)) - len(self.number)] - 0.02, 0.5 - 0.065, ".", {"size": 25}, ha="center", va="center", zorder=1, size=35)
+            else:
+                plt.text(self.idxes[len(str(self.LHS) + str(self.RHS)) - len(self.number)] + 0.005, 0.5 - 0.065, ".", {"size": 25}, ha="center", va="center", zorder=1, size=35)
+            
+            # Add 1 carry
+            self.carries[len(self.number) - 1] += 1
+            
+            # Plot new figure
+            self.top.add_widget(FigureCanvasKivyAgg(plt.gcf()))
+
+            
+    # Checks whether the current answer is the correct one
+    def check_answer(self):
+        if len(self.number) == 0:
+            print(False)
+            return False
+                 
+        non_zero_idx = 0
+        for i, n in enumerate(self.number):
+            if n != "0":
+                non_zero_idx = i
+                break
+                
+        print(f"The user answer is: {self.number}")
+                
+        # Answer by user
+        check_number = eval(self.number[non_zero_idx:])    
+        
+        # Check if answer is correct
+        if check_number == self.answer:
+            print(True)            
+            return True
+        else:
+            print(False)
+            return False
+         
+    # Goes to next multiplication
+    def next_mult(self):
+        # Get current score
+        # current_score = 0
+        # with open("./score.txt", "r") as f:
+        #     txt = f.read()
+        #     if txt != "":
+        #         current_score = eval(txt)
+        # f.close()
+        
+        # # Add to score
+        # with open("./score.txt", "w") as f:
+        #     f.write(str(1 + current_score))
+        # f.close()
+        
+        mod = 1000 if self.difficulty == 2 else (100 if self.difficulty == 1 else 20)
+        self.idx = (self.idx + 1) % mod
+        if self.input_RHS:
+            self.__init__(self.difficulty, self.RHS)
+        else:
+            self.__init__(self.difficulty)
+        
+    # Function for creating explanation
+    def explanation(self, arrow_idx):
+        # Add label for step 1
+        self.step_lab = Label(text=f"Step {self.popup_idx + 1}", size_hint = (0.6, 0.2), pos_hint={"x": 0.2, "top": 1}, font_size=30)
+        self.box.add_widget(self.step_lab)
+        
+        # Add steps for calculating 
+        answer = "0" * (len(str(self.LHS) + str(self.RHS)) - len(str(self.answer))) + str(self.answer)
+        RHS_str = str(self.RHS)
+        LHS_str = "0" * len(RHS_str) + str(self.LHS)
+        
+        # Plot steps ???
+        # if self.input_RHS:
+        #     if self.RHS == 2:
+        #         explainer_str = explainer_func_2(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
+        #         _ = prod_plotter_2(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
+        #     elif self.RHS == 3:
+        #         explainer_str = explainer_func_3(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
+        #         _ = prod_plotter_3(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
+        #     elif self.RHS == 4:
+        #         explainer_str = explainer_func_4(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
+        #         _ = prod_plotter_4(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
+        #     elif self.RHS == 5:
+        #         explainer_str = explainer_func_5(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
+        #         _ = prod_plotter_5(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
+        #     elif self.RHS == 6:
+        #         explainer_str = explainer_func_6(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
+        #         _ = prod_plotter_6(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
+        #     elif self.RHS == 7:
+        #         explainer_str = explainer_func_7(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
+        #         _ = prod_plotter_7(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
+        #     elif self.RHS == 8:
+        #         explainer_str = explainer_func_8(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
+        #         _ = prod_plotter_8(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
+        #     elif self.RHS == 9:
+        #         explainer_str = explainer_func_9(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
+        #         _ = prod_plotter_9(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
+        #     elif self.RHS == 11:
+        #         explainer_str = explainer_func_11(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
+        #         _ = prod_plotter_11(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
+        #     elif self.RHS == 12:
+        #         explainer_str = explainer_func_12(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
+        #         _ = prod_plotter_12(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
+
+        
+        self.fig_widget = FigureCanvasKivyAgg(plt.gcf(), size_hint = (0.6, 0.6), pos_hint={"x": 0.2, "top": 0.75})
+        self.box.add_widget(self.fig_widget)
+        
+        
+        # Add to widget ???
+        # self.lab = Label(text=explainer_str, size_hint = (0.6, 0.2), pos_hint={"x": 0.2, "top": 0.85}, markup=True)
+        # self.box.add_widget(self.lab)
+
+    # Go to next step in solution method
+    def forward_popup(self, *args):
+        self.popup_idx = self.popup_idx + 1
+        self.main_pop.dismiss()
+        plt.close()
+        self.step_by_step()
+        
+    # Go to former step in solution method
+    def backward_popup(self, *args):
+        self.popup_idx = self.popup_idx - 1
+        self.main_pop.dismiss()
+        plt.close()
+        self.step_by_step()
+
+    # Popup index
+    def set_popup_idx_to_zero(self, *args):
+        self.popup_idx = 0
+
+    #### Step by step solution ####
+    def step_by_step(self):
+        # Main box (should maybe be gridlayout with some number of rows -)
+        self.box = FloatLayout()
+        
+        # Show explanation
+        self.explanation(len(str(self.LHS) + str(self.RHS)) - 1 - self.popup_idx)
+        
+        # Button for going to next index
+        if self.popup_idx < len(str(self.LHS) + str(self.RHS)) - 1:
+            self.forward_btn = Button(text="F", size_hint=(0.1, 0.1), pos_hint={"x": 0.8, "top": 0.95})
+            self.box.add_widget(self.forward_btn)
+            
+            # Forward button functionality
+            self.forward_btn.bind(on_press=self.forward_popup)
+            
+        # Button for going to next index
+        if self.popup_idx > 0:
+            self.backward_btn = Button(text="B", size_hint=(0.1, 0.1), pos_hint={"x": 0.2, "top": 0.95})
+            self.box.add_widget(self.backward_btn)
+            
+            # Forward button functionality
+            self.backward_btn.bind(on_press=self.backward_popup)
+            
+        
+        # Button for closing the popup
+        self.popup_close_btn=Button(text="Close", size_hint=(0.7, 0.15), pos_hint={"x": 0.15, "y": 0.1})
+        self.box.add_widget(self.popup_close_btn)
+        
+        # Creating the popup
+        self.main_pop = Popup(title="Step-by-step solution",content=self.box,
+            size_hint=(1,1),title_size=15)
+        
+        # Close button functionality
+        self.popup_close_btn.bind(on_press=self.main_pop.dismiss)
+        self.popup_close_btn.bind(on_press=self.set_popup_idx_to_zero)
+        self.popup_close_btn.bind(on_press=self.CE)
+
+        # Open popup window
+        self.main_pop.open()
+        
+    def show_rule(self, *args, **kwargs):
+        self.rule_box = FloatLayout()      
+        
+        # Explanation
+        explanation = ""
+        num = self.RHS
+            
+        fontsize = 18
+            
+        if num == 12:
+            explanation = """[b]Double each number add it's neighbor[/b]\n"""
+        elif num == 11:
+            explanation = """[b]To each number add it's neighbor[/b]\n"""
+        elif num == 9:
+            explanation = """[i]First Digit[/i]: [b]subtract from 10[/b]\n\n2.)[i]Middle Digits[/i]: [b]Subtract the number from 9 and add the neighbor[/b]\n\n3.)[i]Last Digit[/i] [b]subtract 1 from the leftmost digit in the number[/b]"""
+            fontsize = 15
+        elif num == 8:
+            explanation = """[i]First Digit[/i]: [b]subtract from 10 and double[/b]\n\n2.)[i]Middle Digits[/i]: [b]Subtract the number from 9 and double what you get, then add the neighbor[/b]\n\n3.)[i]Last Digit[/i] [b]subtract 2 from the leftmost digit in the number[/b]"""
+            fontsize = 15
+        elif num == 7:
+            explanation = """[b]Double the number and add half the neighbor; add 5 if the number is odd. [/b]""" 
+        elif num == 6:
+            explanation = """[b]To each "number" add half the neighbor; plus 5 if "number" is odd.[/b]""" 
+        elif num == 5:
+            explanation = """[b]Half the neighbor; plus 5 if "number" is odd.[/b]""" 
+        elif num == 4:
+            explanation = """[i]First Digit[/i]: [b]subtract from 10[/b]\n\n2.)[i]Middle Digits[/i]: [b]Subtract the number from 9 and add half the neighbor; add 5 if the number is odd[/b]\n\n3.)[i]Last Digit[/i] [b]subtract 1 from half of the leftmost digit in the number[/b]"""
+            fontsize = 15
+        elif num == 3:
+            explanation = """[i]First Digit[/i]: [b]subtract from 10 and double; Add 5 if the number is odd[/b]\n\n2.)[i]Middle Digits[/i]: [b]Subtract the number from 9 and double what you get, then add half the neighbor; add 5 if the number is odd[/b]\n\n3.)[i]Last Digit[/i] [b]subtract 2 from half of the leftmost digit in the number[/b]"""
+            fontsize = 15
+        elif num == 2:
+            explanation = """[b]Double the number[/b]"""   
+
+        # Add title
+        title_lab = Label(text="Multiplication rule | " + (str(self.RHS) if self.input_RHS else "UT"), size_hint=(0.7, None), font_size=20, pos_hint={"x": 0.15, "y": 0.82})
+        self.rule_box.add_widget(title_lab)
+        
+        # Add explanation
+        if fontsize == 15:
+            expl_lab = Label(text=explanation, markup=True, font_size=fontsize, size_hint=(0.8, None),  text_size=(self.width * 0.6, None), pos_hint={"x": 0.1, "y": 0.45})
+        else:
+            expl_lab = Label(text=explanation, markup=True, font_size=fontsize, size_hint=(0.8, None),  text_size=(self.width * 0.6, None), pos_hint={"x": 0.1, "y": 0.45}, halign="center")
+        self.rule_box.add_widget(expl_lab)
+        
+        # Button for closing the popup
+        self.popup_close_btn=Button(text="Close", size_hint=(0.65, 0.1), pos_hint={"x": 0.15, "y": 0.05})
+        self.rule_box.add_widget(self.popup_close_btn)
+        
+        # Creating the popup
+        self.main_pop = Popup(title="Multiplication rule | " + (str(self.RHS) if self.input_RHS else "UT"),content=self.rule_box,
+            size_hint=(0.8,0.9),title_size=15)
+        
+        # Close button functionality
+        self.popup_close_btn.bind(on_press=self.main_pop.dismiss)
+        self.popup_close_btn.bind(on_press=self.set_popup_idx_to_zero)
+        self.popup_close_btn.bind(on_press=self.CE)   
+        
+        # Open popup window
+        self.main_pop.open()
+        
+        
+    def clear_wid(self):
+        self.idx = (self.idx + 1) % 20
+        self.CE()
+        self.num_btn_presses = 0
+        plt.close("all")
+        
+    def go_back(self):
+        app= App.get_running_app()
+        if self.input_RHS:
+            app.root.current = "OneTwelve"
+        else:
+            app.root.current = "mult"
+
+
+class MultWindow(Screen):
+    def go_to_hard(self):
+        self.parent.current = "hard"
+        MultHard().__init__()
+        
+    def go_to_med(self):
+        self.parent.current = "medium"
+        MultMed().__init__()
+        
+    def go_to_easy(self):
+        self.parent.current = "easy"
+        plt.close("all")
+        MultEasy().__init__()
+
+
+class MultHard(Screen):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(UT_Mult(2))
+
+class MultMed(Screen):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(UT_Mult(1))
+
+class MultEasy(Screen):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(UT_Mult(0))
+
+
+# Info and rules
 class InfoScreen(Screen):
     def __init__(self, **kw):
         super().__init__(**kw)

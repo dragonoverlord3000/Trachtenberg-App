@@ -6,6 +6,10 @@ WindowManager:
     InfoScreen:
     TrachtSysInfoScreen:
     UTInfoScreen:
+    MultWindow:
+    MultEasy:
+    MultMed:
+    MultHard:
     Test:
 
 
@@ -261,6 +265,7 @@ WindowManager:
                 app.root.current = "info"
                 root.parent.manager.transition.direction = "right"
 
+# Main > Info > UT
 <UTInfoScreen>:
     name: "ut_info"
 
@@ -364,13 +369,212 @@ WindowManager:
                 root.parent.manager.transition.direction = "right"
 
 
+<MultWindow>:
+    name: "mult"
+
+    FloatLayout:
+        size: root.width, root.height
+
+        GridLayout:
+            rows: 2
+            size_hint: 1,1
+
+            Label:
+                text: "Choose Difficulty"
+                color: "#000000"
+                font_size: 28
+
+            GridLayout:
+                cols: 1
+                rows: 3
+
+                Button:
+                    text: "Easy"
+                    font_size: 23
+                    background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else (0, 1, 0, 1/3)
+                    on_release: 
+                        root.go_to_easy()
+                        root.manager.transition.direction = "left"
+
+                Button:
+                    text: "Medium"
+                    font_size: 23
+                    background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else (0,0,1,1/6)
+                    on_release: 
+                        root.go_to_med()
+                        root.manager.transition.direction = "left"
+
+                Button:
+                    text: "Hard"
+                    font_size: 23
+                    background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else (1, 0, 0, 1/2)
+                    on_release: 
+                        root.go_to_hard()
+                        root.manager.transition.direction = "left"
 
 
+        Button:
+            text: "Back"
+            pos_hint: {"right": 0.185, "top": 0.99}
+            size_hint: 0.175,0.075
+            background_color: (1,0,0,3/4)
+            on_release: 
+                app.root.current = "main"
+                root.manager.transition.direction = "right"
 
-<Test>:
-    name: "test"
+# General multiplication
+<MultHard>:
+    name: "hard"
 
+<MultMed>:
+    name: "medium"
 
+<MultEasy>:
+    name: "easy"
+
+# General container for UT-type multiplication
+<UT_Mult>:
+    top: top
+    enter: enter
+
+    FloatLayout:
+        id: float_lay
+        size: root.width, root.height
+
+        GridLayout:
+            rows: 2
+            cols: 1
+
+            # Sets the size of the grid layout to the whole app
+            size: root.width, root.height
+
+            BoxLayout:
+                id: top
+
+            GridLayout:
+                rows: 4
+
+                GridLayout:
+                    cols: 4
+
+                    Button:
+                        text: "1"
+                        background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else (178/255, 192/255, 187/255, 1/2)
+                        on_release: root.btn(1)
+
+                    Button:
+                        text: "2"
+                        background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else (178/255, 192/255, 187/255, 1/2)
+                        on_release: root.btn(2)
+
+                    Button:
+                        text: "3"
+                        background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else (178/255, 192/255, 187/255, 1/2)
+                        on_release: root.btn(3)
+
+                    Button:
+                        text: "CE"
+                        background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else (178/255, 192/255, 187/255, 1/2)
+                        on_release: root.CE()
+
+                GridLayout:
+                    cols: 4
+
+                    Button:
+                        text: "4"
+                        background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else (178/255, 192/255, 187/255, 1/2)
+                        on_release: root.btn(4)
+
+                    Button:
+                        text: "5"
+                        background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else (178/255, 192/255, 187/255, 1/2)
+                        on_release: root.btn(5)
+
+                    Button:
+                        text: "6"
+                        background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else (178/255, 192/255, 187/255, 1/2)
+                        on_release: root.btn(6)
+
+                    Button:
+                        background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else (178/255, 192/255, 187/255, 1/2)
+                        font_name: "./arial.ttf"
+                        font_size: 40
+                        text: "←"
+                        on_release: root.back()
+
+                GridLayout:
+                    cols: 4
+
+                    Button:
+                        text: "7"
+                        background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else (178/255, 192/255, 187/255, 1/2)
+                        on_release: root.btn(7)
+
+                    Button:
+                        text: "8"
+                        background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else (178/255, 192/255, 187/255, 1/2)
+                        on_release: root.btn(8)
+
+                    Button:
+                        text: "9"
+                        background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else (178/255, 192/255, 187/255, 1/2)
+                        on_release: root.btn(9)
+
+                    Button:
+                        background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else (178/255, 192/255, 187/255, 1/2)
+                        font_size: 40
+                        text: "."
+                        on_release: root.carry()
+
+                GridLayout:
+                    cols: 2
+
+                    GridLayout:
+                        cols: 2
+
+                        Button:
+                            text: ""
+
+                        Button:
+                            text: "0"
+                            background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else (178/255, 192/255, 187/255, 1/2)
+                            on_release: root.btn(0)
+
+                    GridLayout:
+                        cols: 2
+
+                        Button:
+                            text: ""
+
+                        Button:
+                            id: enter
+                            background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else ((0,1,0,4/5) if root.check_answer() else (1,0,0,4/5))
+                            font_name: "./arial.ttf"
+                            font_size: 40
+                            text: "→"
+                            on_release:
+                                root.next_mult() if root.check_answer() else ""
+
+ 
+
+        Button:
+            text: "Solve"
+            pos_hint: {"right": 0.99, "top": 0.99}
+            size_hint: 0.175,0.075
+            background_color: (0,1,0,3/4)
+            on_release: root.step_by_step()
+
+        Button:
+            text: "Back"
+            pos_hint: {"right": 0.185, "top": 0.99}
+            size_hint: 0.175,0.075
+            background_color: (1,0,0,3/4)
+            on_release: 
+                root.clear_wid()
+                # What if 1-12 ???
+                # app.root.current = "mult"
+                root.go_back()
+                root.parent.manager.transition.direction = "right"
 
 
 
