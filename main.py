@@ -1869,7 +1869,6 @@ class UT_Mult(Widget):
         
         # Plot steps
         if self.input_RHS:
-            pass
             if self.RHS == 2:
                 explainer_str = explainer_func_2(arrow_idx=arrow_idx, LHS_str=LHS_str, answer=answer)
                 _ = prod_plotter_2(self.LHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
@@ -2043,7 +2042,7 @@ class UT_Mult(Widget):
     def go_back(self):
         app= App.get_running_app()
         if self.input_RHS:
-            app.root.current = "OneTwelve"
+            app.root.current = "one_twelve"
         else:
             app.root.current = "mult"
 
@@ -2076,6 +2075,91 @@ class MultEasy(Screen):
     def __init__(self, **kw):
         super().__init__(**kw)
         self.add_widget(UT_Mult(0))
+
+# 1-12 multiplication
+class MultOneTwelve(Screen):
+    def go_to_2(self):
+        self.parent.current = "mult2"
+        Mult2().__init__()
+    def go_to_3(self):
+        self.parent.current = "mult3"
+        Mult3().__init__()
+    def go_to_4(self):
+        self.parent.current = "mult4"
+        Mult4().__init__()
+    def go_to_5(self):
+        self.parent.current = "mult5"
+        Mult5().__init__()
+    def go_to_6(self):
+        self.parent.current = "mult6"
+        Mult6().__init__()
+    def go_to_7(self):
+        self.parent.current = "mult7"
+        Mult7().__init__()
+    def go_to_8(self):
+        self.parent.current = "mult8"
+        Mult8().__init__()
+    def go_to_9(self):
+        self.parent.current = "mult9"
+        Mult9().__init__()
+    def go_to_11(self):
+        self.parent.current = "mult11"
+        Mult11().__init__()
+    def go_to_12(self):
+        self.parent.current = "mult12"
+        Mult12().__init__()
+        
+
+class Mult2(Screen):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(UT_Mult(0, 2))
+        
+class Mult3(Screen):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(UT_Mult(0, 3))
+        
+class Mult4(Screen):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(UT_Mult(0, 4))
+
+class Mult5(Screen):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(UT_Mult(0, 5))
+
+class Mult6(Screen):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(UT_Mult(0, 6))
+
+class Mult7(Screen):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(UT_Mult(0, 7))
+
+class Mult8(Screen):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(UT_Mult(0, 8))
+
+class Mult9(Screen):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(UT_Mult(0, 9))
+
+class Mult11(Screen):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(UT_Mult(0, 11))
+
+class Mult12(Screen):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(UT_Mult(0, 12))
+
 
 
 # Info and rules

@@ -6,10 +6,24 @@ WindowManager:
     InfoScreen:
     TrachtSysInfoScreen:
     UTInfoScreen:
+
     MultWindow:
     MultEasy:
     MultMed:
     MultHard:
+
+    MultOneTwelve:
+    Mult2:
+    Mult3:
+    Mult4:
+    Mult5:
+    Mult6:
+    Mult7:
+    Mult8:
+    Mult9:
+    Mult11:
+    Mult12:
+
 
 
 # Main window
@@ -575,7 +589,140 @@ WindowManager:
                 root.go_back()
                 root.parent.manager.transition.direction = "right"
 
+# Multiplication with numbers 1-12
+<MultOneTwelve>:
+    name: "one_twelve"
 
+    FloatLayout:
+        size: root.width, root.height
+
+        GridLayout:
+            rows: 2
+            cols: 1
+
+            Label:
+                text: "1-12 Multiplication"
+                color: "#000000"
+                font_size: 28
+
+
+            GridLayout:
+                cols: 2
+                rows: 5
+                size_hint: 1, 3
+
+                Button:
+                    text: "2"
+                    background_color: (178/255, 192/255, 187/255, 1)
+                    on_release: 
+                        # app.root.current = "mult2"
+                        root.go_to_2()
+                        root.manager.transition.direction = "left"
+
+                Button:
+                    text: "3"
+                    background_color: (178/255, 192/255, 187/255, 1)
+                    on_release: 
+                        # app.root.current = "mult3"
+                        root.go_to_3()
+                        root.manager.transition.direction = "left"
+                Button:
+                    text: "4"
+                    background_color: (178/255, 192/255, 187/255, 1)
+                    on_release: 
+                        # app.root.current = "mult4"
+                        root.go_to_4()
+                        root.manager.transition.direction = "left"
+                Button:
+                    text: "5"
+                    background_color: (178/255, 192/255, 187/255, 1)
+                    on_release: 
+                        # app.root.current = "mult5"
+                        root.go_to_5()
+                        root.manager.transition.direction = "left"
+                Button:
+                    text: "6"
+                    background_color: (178/255, 192/255, 187/255, 1)
+                    on_release: 
+                        # app.root.current = "mult6"
+                        root.go_to_6()
+                        root.manager.transition.direction = "left"
+
+                Button:
+                    text: "7"
+                    background_color: (178/255, 192/255, 187/255, 1)
+                    on_release: 
+                        # app.root.current = "mult7"
+                        root.go_to_7()
+                        root.manager.transition.direction = "left"
+                Button:
+                    text: "8"
+                    background_color: (178/255, 192/255, 187/255, 1)
+                    on_release: 
+                        # app.root.current = "mult8"
+                        root.go_to_8()
+                        root.manager.transition.direction = "left"
+                Button:
+                    text: "9"
+                    background_color: (178/255, 192/255, 187/255, 1)
+                    on_release: 
+                        # app.root.current = "mult9"
+                        root.go_to_9()
+                        root.manager.transition.direction = "left"
+                Button:
+                    text: "11"
+                    background_color: (178/255, 192/255, 187/255, 1)
+                    on_release: 
+                        # app.root.current = "mult11"
+                        root.go_to_11()
+                        root.manager.transition.direction = "left"
+                Button:
+                    text: "12"
+                    background_color: (178/255, 192/255, 187/255, 1)
+                    on_release: 
+                        # app.root.current = "mult12"
+                        root.go_to_12()
+                        root.manager.transition.direction = "left"
+
+        Button:
+            text: "Back"
+            pos_hint: {"right": 0.185, "top": 0.99}
+            size_hint: 0.175,0.075
+            background_color: (1,0,0,3/4)
+            on_release: 
+                app.root.current = "main"
+                root.manager.transition.direction = "right"
+
+
+<Mult2>:
+    name: "mult2"
+
+<Mult3>:
+    name: "mult3"
+
+<Mult4>:
+    name: "mult4"
+
+<Mult5>:
+    name: "mult5"
+
+<Mult6>:
+    name: "mult6"
+
+<Mult7>:
+    name: "mult7"
+
+<Mult8>:
+    name: "mult8"
+
+<Mult9>:
+    name: "mult9"
+
+<Mult11>:
+    name: "mult11"
+
+<Mult12>:
+    name: "mult12"
 
 
 
