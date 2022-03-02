@@ -1,10 +1,10 @@
 [app]
 
 # (str) Title of your application
-title = MyKivyApp
+title = Trachtenberg Multiplication
 
 # (str) Package name
-package.name = MyKivyApp
+package.name = Trachtenberg Multiplication
 
 # (str) Package domain (needed for android/ios packaging)
 package.domain = org.test
