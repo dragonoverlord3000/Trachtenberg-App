@@ -61,7 +61,7 @@ WindowManager:
             Label:
                 text: "Game Mode"
                 color: "#000000"
-                font_size: 45
+                font_size: 50
 
             GridLayout:
                 cols: 1
@@ -72,14 +72,14 @@ WindowManager:
 
                     Button:
                         text: "UT"
-                        font_size: 30
+                        font_size: 35
                         on_release: 
                             app.root.current = "mult"
                             root.parent.manager.transition.direction = "left"
 
                     Button:
                         text: "1-12"
-                        font_size: 30
+                        font_size: 35
                         on_release: 
                             app.root.current = "one_twelve"
                             root.parent.manager.transition.direction = "left"
@@ -89,7 +89,7 @@ WindowManager:
 
                     Button:
                         text: "Info"
-                        font_size: 30
+                        font_size: 35
                         on_release: 
                             app.root.current = "info"
                             root.parent.manager.transition.direction = "left"
@@ -119,7 +119,7 @@ WindowManager:
             Label:
                 text: "Info & Rules"
                 color: "#000000"
-                font_size: 40
+                font_size: 45
 
             GridLayout:
                 cols: 1
@@ -127,7 +127,7 @@ WindowManager:
 
                 Button:
                     text: "Trachtenberg"
-                    font_size: 30
+                    font_size: 35
                     background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else (178/255, 192/255, 187/255, 1/2)
                     on_release:
                         app.root.current = "tracht_sys_info"
@@ -135,7 +135,7 @@ WindowManager:
 
                 Button:
                     text: "Rules [1-12]"
-                    font_size: 30
+                    font_size: 35
                     background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else (178/255, 192/255, 187/255, 1/2)
                     on_release:
                         app.root.current = "expl_11"
@@ -144,7 +144,7 @@ WindowManager:
 
                 Button:
                     text: "Rule UT"
-                    font_size: 30
+                    font_size: 35
                     background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else (178/255, 192/255, 187/255, 1/2)
                     on_release: 
                         app.root.current = "ut_info"
@@ -184,9 +184,9 @@ WindowManager:
 
 
                 Label:
-                    text: "\n\n[b]The Trachtenberg Method[/b]"
+                    text: "\n\n[b]The Trachtenberg Method[/b]\n\n"
                     color: "#000000"
-                    font_size: 40
+                    font_size: 45
                     halign: "center"
                     markup: True
                     size_hint_y: None
@@ -198,7 +198,7 @@ WindowManager:
                     color: "#000000"
                     text: "[b]What is the Trachtenberg method[/b]"
                     halign: "left"
-                    font_size: 30
+                    font_size: 35
                     markup: True
                     size_hint_y: None
                     height: self.texture_size[1]
@@ -209,7 +209,7 @@ WindowManager:
                     color: "#000000"
                     text: "The trachtenberg method is a way of multiplication that optimizes speed by allocating as few temporary numbers as possible to be kept in memory as possible. It was was developed by [i]Jakow Trachtenberg[/i] to keep his mind occupied while being in a Nazi concentration camp.\n"
                     halign: "left"
-                    font_size: 23
+                    font_size: 26
                     markup: True
                     size_hint_y: None
                     height: self.texture_size[1]
@@ -220,7 +220,7 @@ WindowManager:
                     color: "#000000"
                     text: "[b]Conventions[/b]"
                     halign: "left"
-                    font_size: 30
+                    font_size: 35
                     markup: True
                     size_hint_y: None
                     height: self.texture_size[1]
@@ -231,7 +231,7 @@ WindowManager:
                     color: "#000000"
                     text: """The trachtenberg system always start at the rightmost digit and the proceeds to move towards the left. 'The current digit' is often reffered to as 'the number' while the number to it's right is reffered to as it's 'neighbor'. \nOne of the features of the trachtenberg system is that you never have to carry more than a 2 and because of this any carry is simply represented by a dot in the trachtenberg system - see the figure below:"""
                     halign: "left"
-                    font_size: 23
+                    font_size: 26
                     markup: True
                     size_hint_y: None
                     height: self.texture_size[1]
@@ -248,7 +248,7 @@ WindowManager:
                     color: "#000000"
                     text: "[i][b]Note[/b] that the rule for multiplying by 11 is [b]take the number and add the neighbor[/b]; For example: the first number above is 5 + 0 = [u]5[/u], the next is 5 + 5 = 1[u]0[/u] with the tens digit being a carry (the dot), the next is 5 + 5 = 10 and then plus the carry = 1[u]1[/u] with the tens digit being a carry (the dot), and so on... [/i]\n"
                     halign: "left"
-                    font_size: 23
+                    font_size: 26
                     markup: True
                     size_hint_y: None
                     height: self.texture_size[1]
@@ -259,7 +259,7 @@ WindowManager:
                     color: "#000000"
                     text: "[b]More Material[/b]"
                     halign: "left"
-                    font_size: 30
+                    font_size: 35
                     markup: True
                     size_hint_y: None
                     height: self.texture_size[1]
@@ -271,7 +271,7 @@ WindowManager:
                     # Add amazon affiliate link for book + my upcommin YT-videos ???
                     text: "If you're looking for more material on the trachtenberg method, then I highly recommend the book '[i]The Trachtenberg Speed System Of Mathematics[/i]' by Ann Cutler and Rudolph McShane. It is an in depth, easy to follow, book about all of the trachtenberg system."
                     halign: "left"
-                    font_size: 23
+                    font_size: 26
                     markup: True
                     size_hint_y: None
                     height: self.texture_size[1]
@@ -309,7 +309,7 @@ WindowManager:
                 size_hint: 1, 1/2
                 text: "Rules | UT-multiplication"
                 color: "#000000"
-                font_size: 40
+                font_size: 45
 
             GridLayout:
                 cols: 1
@@ -354,7 +354,7 @@ WindowManager:
 
                     markup: True
                     color: "#000000"
-                    font_size: 23
+                    font_size: 26
                     text: 
                         """The [b]u[/b]nits-[b]t[/b]ens multiplication method ([i]UT-method[/i]) is a method for multiplying [b]arbitrary[/b] integers with a minimal amount of temporary results to be kept in memory.
                         The rules for multiplying two digits, [i]abc[/i] and [i]de[/i] using  UT-multiplication are as follows: \n\n\n 1. [i]Preparation[/i]: Add a number of leading 0's, to the left term in the product, equal to the number of digits in the right hand side of the  product. E.g. write the number 123 as 000123 if 123 is multiplied by  a 3 digit number (this is done automatically in this app).
@@ -406,7 +406,7 @@ WindowManager:
             Label:
                 text: "Choose Difficulty"
                 color: "#000000"
-                font_size: 40
+                font_size: 45
 
             GridLayout:
                 cols: 1
@@ -414,7 +414,7 @@ WindowManager:
 
                 Button:
                     text: "Easy"
-                    font_size: 30
+                    font_size: 35
                     background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else (0, 1, 0, 1/3)
                     on_release: 
                         root.go_to_easy()
@@ -422,7 +422,7 @@ WindowManager:
 
                 Button:
                     text: "Medium"
-                    font_size: 30
+                    font_size: 35
                     background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else (0,0,1,1/6)
                     on_release: 
                         root.go_to_med()
@@ -430,7 +430,7 @@ WindowManager:
 
                 Button:
                     text: "Hard"
-                    font_size: 30
+                    font_size: 35
                     background_color: (178/255, 192/255, 187/255, 1) if self.state == "normal" else (1, 0, 0, 1/2)
                     on_release: 
                         root.go_to_hard()
@@ -614,7 +614,7 @@ WindowManager:
             Label:
                 text: "1-12 Multiplication"
                 color: "#000000"
-                font_size: 40
+                font_size: 45
 
 
             GridLayout:
@@ -753,7 +753,7 @@ WindowManager:
                 size_hint: 1, 1/2
                 text: "Rules | 11-multiplication"
                 color: "#000000"
-                font_size: 40
+                font_size: 45
 
             GridLayout:
                 cols: 1
