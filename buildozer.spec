@@ -1,10 +1,10 @@
 [app]
 
 # (str) Title of your application
-title = Trachtenberg Multiplication
+title = TrachtenbergApp
 
 # (str) Package name
-package.name = Trachtenberg Multiplication
+package.name = TrachtenbergApp
 
 # (str) Package domain (needed for android/ios packaging)
 package.domain = org.test
