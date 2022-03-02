@@ -61,14 +61,14 @@ def prod_plotter(LHS, RHS, arrow_idx=None, rect_idx=0, background_color=(192/255
     
     # Create figure and set axis limits
     font_size = 22
-    y_carry = 0.1
+    y_carry = 0.12
     if step_by_step:
         plt.figure(figsize=(3,4), facecolor=background_color)
         font_size = 15
     elif info:
         plt.figure(figsize=(4,4), facecolor=background_color)
         font_size = 15
-        y_carry = 0.05
+        y_carry = 0.06
     else:
         plt.figure(figsize=(6,8), facecolor=background_color)
     plt.xlim((0,1))
@@ -155,11 +155,11 @@ def prod_plotter(LHS, RHS, arrow_idx=None, rect_idx=0, background_color=(192/255
             
             # Plot carry dots
             if eval(digit[0]) == 1:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - y_carry, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - y_carry, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
                 carry = 1
             elif eval(digit[0]) == 2:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - y_carry, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
-                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - y_carry, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - y_carry, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - y_carry, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
                 carry = 2
             else:
                 carry = 0
@@ -262,7 +262,7 @@ def prod_plotter_2(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/
             
             # Plot carry dots
             if eval(digit[0]) == 1:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
                 carry = 1
             else:
                 carry = 0
@@ -369,11 +369,11 @@ def prod_plotter_3(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/
             
             # Plot carry dots
             if eval(digit[0]) == 1:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
                 carry = 1
             elif eval(digit[0]) == 2:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
-                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
                 carry = 2
             else:
                 carry = 0
@@ -481,11 +481,11 @@ def prod_plotter_4(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/
             # Plot carry dots
             if i < len(text1) - 1:
                 if eval(digit[0]) == 1:
-                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
                     carry = 1
                 elif eval(digit[0]) == 2:
-                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
-                    plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                    plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
                     carry = 2
                 else:
                     carry = 0
@@ -587,11 +587,11 @@ def prod_plotter_5(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/
             
             # Plot carry dots
             if eval(digit[0]) == 1:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
                 carry = 1
             elif eval(digit[0]) == 2:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
-                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
                 carry = 2
             else:
                 carry = 0
@@ -693,11 +693,11 @@ def prod_plotter_6(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/
             
             # Plot carry dots
             if eval(digit[0]) == 1:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
                 carry = 1
             elif eval(digit[0]) == 2:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
-                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
                 carry = 2
             else:
                 carry = 0
@@ -799,11 +799,11 @@ def prod_plotter_7(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/
             
             # Plot carry dots
             if eval(digit[0]) == 1:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
                 carry = 1
             elif eval(digit[0]) == 2:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
-                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
                 carry = 2
             else:
                 carry = 0
@@ -911,11 +911,11 @@ def prod_plotter_8(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/
             # Plot carry dots
             if i < len(text1) - 1:
                 if eval(digit[0]) == 1:
-                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
                     carry = 1
                 elif eval(digit[0]) == 2:
-                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
-                    plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                    plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
                     carry = 2
                 else:
                     carry = 0
@@ -1023,11 +1023,11 @@ def prod_plotter_9(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/
             # Plot carry dots
             if i < len(text1) - 1:
                 if eval(digit[0]) == 1:
-                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
                     carry = 1
                 elif eval(digit[0]) == 2:
-                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
-                    plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                    plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
                     carry = 2
                 else:
                     carry = 0
@@ -1129,11 +1129,11 @@ def prod_plotter_11(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178
             
             # Plot carry dots
             if eval(digit[0]) == 1:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
                 carry = 1
             elif eval(digit[0]) == 2:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
-                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
                 carry = 2
             else:
                 carry = 0
@@ -1235,11 +1235,11 @@ def prod_plotter_12(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178
             
             # Plot carry dots
             if eval(digit[0]) == 1:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
                 carry = 1
             elif eval(digit[0]) == 2:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
-                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
                 carry = 2
             else:
                 carry = 0
