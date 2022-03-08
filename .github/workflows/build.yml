@@ -15,6 +15,7 @@ jobs:
         uses: ArtemSBulgakov/buildozer-action@v1
         id: buildozer
         with:
+          command: buildozer -v android release
           workdir: .
           buildozer_version: stable
 
