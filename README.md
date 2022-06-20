@@ -3,7 +3,7 @@ The trachtenberg system for multiplication is a way of multiplying large numbers
 ![Trachtenberg mult by 11](/carry_im.png)
 
 ## Download
-You can download the app for android systems by going to the *apk* folder and downloading the 'apk' file in it to your phone. [DOWNLOAD](https://drive.google.com/file/d/1m1u0jq3TzxgklhLsRaSe69ItrfFujJoz/view?usp=sharing).
+You can download the app for android systems by going to the *apk* folder and downloading the 'apk' file in it to your phone. Or by clicking this [DOWNLOAD](https://drive.google.com/file/d/1m1u0jq3TzxgklhLsRaSe69ItrfFujJoz/view?usp=sharing) link.
 
 
 ## Inspiration
