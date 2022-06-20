@@ -1,25 +1,25 @@
 [app]
 
 # (str) Title of your application
-title = TrachtenbergApp
+title = My Application
 
 # (str) Package name
-package.name = TrachtenbergApp
+package.name = myapp
 
 # (str) Package domain (needed for android/ios packaging)
-package.domain = kaeple.com
+package.domain = org.test
 
 # (str) Source code where the main.py live
 source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
-source.include_exts = py,png,jpg,kv,atlas,txt,ttf
+source.include_exts = py,png,jpg,kv,atlas
 
 # (list) List of inclusions using pattern matching
 #source.include_patterns = assets/*,images/*.png
 
 # (list) Source files to exclude (let empty to not exclude anything)
-source.exclude_exts = spec
+#source.exclude_exts = spec
 
 # (list) List of directory to exclude (let empty to not exclude anything)
 #source.exclude_dirs = tests, bin
@@ -36,21 +36,20 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy,numpy,matplotlib
+requirements = python3,kivy
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
 # requirements.source.kivy = ../../kivy
 
 # (list) Garden requirements
-# garden_requirements = matplotlib
+#garden_requirements =
 
 # (str) Presplash of the application
 #presplash.filename = %(source.dir)s/data/presplash.png
 
 # (str) Icon of the application
 #icon.filename = %(source.dir)s/data/icon.png
-icon.filename = ./icon.png
 
 # (str) Supported orientation (one of landscape, sensorLandscape, portrait or all)
 orientation = portrait
@@ -220,9 +219,7 @@ fullscreen = 0
 #android.copy_libs = 1
 
 # (str) The Android arch to build for, choices: armeabi-v7a, arm64-v8a, x86, x86_64
-android.archs = armeabi-v7a
-# android.release_artifact = aab 
-# p4a.branch = develop
+android.arch = armeabi-v7a
 
 # (int) overrides automatic versionCode computation (used in build.gradle)
 # this is not the same as app version and should only be edited if you know what you're doing

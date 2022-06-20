@@ -1,51 +1,37 @@
 # IMPORTS
-# Plotting
 import kivy
-# Specify kivy version
 kivy.require("1.9.0")
 
-# Plotting imports
+# Plotting
 from backend_kivyagg import FigureCanvasKivyAgg
 from matplotlib.patches import Rectangle
 import matplotlib.pyplot as plt
 
 # Kivy imports
 from kivy.app import App
-from kivy.lang import Builder
-
 from kivy.uix.label import Label
-from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.widget import Widget
+from kivy.uix.button import Button
+from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.popup import Popup
-from kivy.uix.button import Button
+from kivy.uix.scrollview import ScrollView
+from kivy.lang import Builder
+from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.core.window import Window
 
-from kivy.properties import ObjectProperty
-
-# Set background RGBA color - should be a nice gray
+# Set background RGBA color - should be a nice gray ???
 from kivy.core.window import Window
 Window.clearcolor = (192/255, 187/255, 178/255, 1)
 
 # Other imports
+import numpy as np
 import random
 
-# Global variables
-LHS_global = [v for v in range(1,1000)]
-random.shuffle(LHS_global)
+# Import custom functions
 
-RHS_easy = [v for v in range(1,20)]
-random.shuffle(RHS_easy)
-
-RHS_medium = [v for v in range(1,100)]
-random.shuffle(RHS_medium)
-
-RHS_hard = [v for v in range(1,1000)]
-random.shuffle(RHS_hard)
-
-RHS_global = [RHS_easy, RHS_medium, RHS_hard]
-
-##### Custom functions
-# Matplotlib UT-plotter
 def prod_plotter(LHS, RHS, arrow_idx=None, rect_idx=0, background_color=(192/255, 187/255, 178/255, 1), foreground_color=(0,0,0), step_by_step=False, info=False):
     """Plots product of LHS and RHS, possibly with arrows to indicate 
     next move / an error
@@ -61,14 +47,14 @@ def prod_plotter(LHS, RHS, arrow_idx=None, rect_idx=0, background_color=(192/255
     
     # Create figure and set axis limits
     font_size = 22
-    y_carry = 0.12
+    y_carry = 0.1
     if step_by_step:
         plt.figure(figsize=(3,4), facecolor=background_color)
         font_size = 15
     elif info:
         plt.figure(figsize=(4,4), facecolor=background_color)
         font_size = 15
-        y_carry = 0.06
+        y_carry = 0.05
     else:
         plt.figure(figsize=(6,8), facecolor=background_color)
     plt.xlim((0,1))
@@ -155,11 +141,11 @@ def prod_plotter(LHS, RHS, arrow_idx=None, rect_idx=0, background_color=(192/255
             
             # Plot carry dots
             if eval(digit[0]) == 1:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - y_carry, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - y_carry, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
                 carry = 1
             elif eval(digit[0]) == 2:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - y_carry, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
-                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - y_carry, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - y_carry, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - y_carry, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
                 carry = 2
             else:
                 carry = 0
@@ -175,6 +161,7 @@ def prod_plotter(LHS, RHS, arrow_idx=None, rect_idx=0, background_color=(192/255
 
     # plt.show()
     return idxes
+
 
 def prod_plotter_2(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/255, 1), foreground_color=(0,0,0), step_by_step=False):
     """Plots product of LHS and RHS, possibly with arrows to indicate 
@@ -262,7 +249,7 @@ def prod_plotter_2(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/
             
             # Plot carry dots
             if eval(digit[0]) == 1:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
                 carry = 1
             else:
                 carry = 0
@@ -369,11 +356,11 @@ def prod_plotter_3(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/
             
             # Plot carry dots
             if eval(digit[0]) == 1:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
                 carry = 1
             elif eval(digit[0]) == 2:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
-                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
                 carry = 2
             else:
                 carry = 0
@@ -481,11 +468,11 @@ def prod_plotter_4(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/
             # Plot carry dots
             if i < len(text1) - 1:
                 if eval(digit[0]) == 1:
-                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
                     carry = 1
                 elif eval(digit[0]) == 2:
-                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
-                    plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                    plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
                     carry = 2
                 else:
                     carry = 0
@@ -587,11 +574,11 @@ def prod_plotter_5(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/
             
             # Plot carry dots
             if eval(digit[0]) == 1:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
                 carry = 1
             elif eval(digit[0]) == 2:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
-                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
                 carry = 2
             else:
                 carry = 0
@@ -693,11 +680,11 @@ def prod_plotter_6(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/
             
             # Plot carry dots
             if eval(digit[0]) == 1:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
                 carry = 1
             elif eval(digit[0]) == 2:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
-                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
                 carry = 2
             else:
                 carry = 0
@@ -799,11 +786,11 @@ def prod_plotter_7(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/
             
             # Plot carry dots
             if eval(digit[0]) == 1:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
                 carry = 1
             elif eval(digit[0]) == 2:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
-                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
                 carry = 2
             else:
                 carry = 0
@@ -911,11 +898,11 @@ def prod_plotter_8(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/
             # Plot carry dots
             if i < len(text1) - 1:
                 if eval(digit[0]) == 1:
-                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
                     carry = 1
                 elif eval(digit[0]) == 2:
-                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
-                    plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                    plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
                     carry = 2
                 else:
                     carry = 0
@@ -1023,11 +1010,11 @@ def prod_plotter_9(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178/
             # Plot carry dots
             if i < len(text1) - 1:
                 if eval(digit[0]) == 1:
-                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
                     carry = 1
                 elif eval(digit[0]) == 2:
-                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
-                    plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                    plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                    plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
                     carry = 2
                 else:
                     carry = 0
@@ -1129,11 +1116,11 @@ def prod_plotter_11(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178
             
             # Plot carry dots
             if eval(digit[0]) == 1:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
                 carry = 1
             elif eval(digit[0]) == 2:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
-                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
                 carry = 2
             else:
                 carry = 0
@@ -1235,11 +1222,11 @@ def prod_plotter_12(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178
             
             # Plot carry dots
             if eval(digit[0]) == 1:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
                 carry = 1
             elif eval(digit[0]) == 2:
-                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
-                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.15, ".", {"size": 35}, ha="center", va="center", zorder=1, size=35, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] - 0.03, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
+                plt.text(idxes[len(text1) - (i + 1)] + 0.005, 0.5 - 0.1, ".", {"size": 30}, ha="center", va="center", zorder=1, size=25, color=foreground_color)
                 carry = 2
             else:
                 carry = 0
@@ -1252,18 +1239,55 @@ def prod_plotter_12(LHS, arrow_idx=None, background_color=(192/255, 187/255, 178
     return idxes
 
 
+# Note: all zorder's are 1, so that everything can override everything else
 
+"""
+# TO DO:
+ - A welcome page, maybe displaying current highscore and 'welcome'
+    - Option for info/rules
+    - Option for practicing
+    - Speed option
+    - https://stackoverflow.com/questions/25147323/saving-login-screen-username-and-password-for-kivy-app
+
+ - Larger distance between numbers - especially in the popup ???
+ 
+ ---- Combine plot-answer in the plotting functions with the explainer str - for efficiency
+ ---- Remove 2 and 3 ???
+ 
+ 
+ - Display that the answer was wrong ???
+ - Have step-by-step popup depend on which mode is chosen
+
+ - Create menu's and nice explainers for every rule [medium]
+ - Create navigation system [medium] ???
+ - An individual stats page for how a person is doing [medium/hard]
+ - Create game modes [easy/medium]
+    - Timed random multiplication (UT-rule) - speed mode
+    - A mode for each multiplier 1-12
+    - Division ???
+"""
+
+# Global variables
+LHS_global = [v for v in range(1,1000)]
+random.shuffle(LHS_global)
+
+RHS_easy = [v for v in range(1,20)]
+random.shuffle(RHS_easy)
+
+RHS_medium = [v for v in range(1,100)]
+random.shuffle(RHS_medium)
+
+RHS_hard = [v for v in range(1,1000)]
+random.shuffle(RHS_hard)
+
+RHS_global = [RHS_easy, RHS_medium, RHS_hard]
 
 # Navigation manager
 class WindowManager(ScreenManager):
+    # store number of mults completed + average mult speed in speed mode + fastest 10 in a row, speed mode - https://stackoverflow.com/questions/25147323/saving-login-screen-username-and-password-for-kivy-app
     pass
 
-class MainWindowScreen(Screen):
-    def __init__(self, **kw):
-        super().__init__(**kw)
-        self.add_widget(MainWindow())
-
-class MainWindow(Widget):
+class MainWid(Widget):
     def __init__(self, **kw):
         super().__init__(**kw)
         self.counter = self.ids["counter"]
@@ -1274,7 +1298,12 @@ class MainWindow(Widget):
             txt = f.read()
             self.counter.text = f"Total multiplications solved\n[b]{txt}[/b]"
         f.close()
-        
+
+class MainWindow(Screen):        
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(MainWid())
+
 # Explainer functions
 # UT - multiplitcation
 def explainer_func_ut(arrow_idx, LHS_str, RHS_str, answer):
@@ -1680,7 +1709,8 @@ def explainer_func_12(arrow_idx, LHS_str, answer):
     return explainer_str
 
 
-# The multiplication class
+
+# Multiplication with digits from 1 to 1000
 class UT_Mult(Widget):
     top = ObjectProperty(None)
     enter = ObjectProperty(None)
@@ -1716,7 +1746,7 @@ class UT_Mult(Widget):
         self.answer = self.LHS * self.RHS
 
         # Store number of carry dots in array        
-        self.carries = [0 for _ in range(len(str(self.LHS) + str(self.RHS)))]
+        self.carries = np.zeros(len(str(self.LHS) + str(self.RHS)))
         
         # For popup
         self.popup_idx = 0
@@ -1765,7 +1795,7 @@ class UT_Mult(Widget):
         # Clear number
         self.number = ""
         # Clear carries
-        self.carries = [0 for _ in range(len(str(self.LHS) + str(self.RHS)))]
+        self.carries = np.zeros(len(str(self.LHS) + str(self.RHS)))
         
         self.top.clear_widgets()
         self.idxes = prod_plotter(self.LHS, self.RHS)
@@ -1777,23 +1807,29 @@ class UT_Mult(Widget):
         if len(self.number) > 0:
             self.top.clear_widgets()
             
-            # In stead of filling over, I should call `self.CE()` and then call the `btn` and `carry` methods as needed
-            num = self.number[1:]
-            carr = self.carries[:len(self.number)]
-            self.CE()
-            for i,n in enumerate(reversed(num)):
-                self.btn(eval(n))
-                print(i,self.carries)
-                carry_val = carr[i]
-                if carry_val >= 1:
-                    self.carry()
-                    if carry_val == 2:
-                        self.carry()
+            # Fill over identifier rect and former number
+            fill_rect1 = Rectangle((self.idxes[len(str(self.LHS) + str(self.RHS)) - len(self.number)] - 0.03 - 0.01, 0.5 - 0.28), 0.06 + 0.02, 0.195, facecolor=(192/255, 187/255, 178/255, 1), edgecolor=(192/255, 187/255, 178/255, 1), linewidth=2, zorder=1)
+            fill_rect2 = Rectangle((self.idxes[len(str(self.LHS) + str(self.RHS)) - len(self.number) - 1] - 0.03 - 0.01, 0.5 - 0.28), 0.06 + 0.02, 0.195, facecolor=(192/255, 187/255, 178/255, 1), edgecolor=(192/255, 187/255, 178/255, 1), linewidth=2, zorder=1)
+            plt.gca().add_patch(fill_rect1)
+            plt.gca().add_patch(fill_rect2)
+        
+            # Plot new identifier rect
+            rect = Rectangle((self.idxes[len(str(self.LHS) + str(self.RHS)) - len(self.number)] - 0.035, 0.5 - 0.27), 0.07, 0.17, facecolor="none", edgecolor="black", linewidth=2, zorder=1)
+            plt.gca().add_patch(rect)
+        
+            # Reassign number
+            self.number = self.number[1:]
+            
+            # Reassign carry
+            self.carries[len(self.number)] = 0
+            
+            # Plot new figure
+            self.top.add_widget(FigureCanvasKivyAgg(plt.gcf()))
 
             
     # Add dot, to symbol a carry
     def carry(self):
-        if self.carries[len(self.number) - 1] <= 2 and len(self.number) >= 1:
+        if self.carries[len(self.number) - 1] < 2 and len(self.number) >= 1:
             print("Carry")
             
             # Clear current image
@@ -1905,7 +1941,6 @@ class UT_Mult(Widget):
         else:
             explainer_str = explainer_func_ut(arrow_idx, LHS_str, RHS_str, answer)
             _ = prod_plotter(self.LHS, self.RHS, arrow_idx=arrow_idx, background_color=(40/255,40/255,40/255,1), foreground_color=(1,1,1), step_by_step=True)
-
         
         self.fig_widget = FigureCanvasKivyAgg(plt.gcf(), size_hint = (0.6, 0.6), pos_hint={"x": 0.2, "top": 0.75})
         self.box.add_widget(self.fig_widget)
@@ -1949,7 +1984,7 @@ class UT_Mult(Widget):
             # Forward button functionality
             self.forward_btn.bind(on_press=self.forward_popup)
             
-        # Button for going to former index
+        # Button for going to next index
         if self.popup_idx > 0:
             self.backward_btn = Button(text="B", size_hint=(0.1, 0.1), pos_hint={"x": 0.2, "top": 0.95})
             self.box.add_widget(self.backward_btn)
@@ -2045,9 +2080,10 @@ class UT_Mult(Widget):
     def go_back(self):
         app= App.get_running_app()
         if self.input_RHS:
-            app.root.current = "one_twelve"
+            app.root.current = "OneTwelve"
         else:
             app.root.current = "mult"
+
 
 class MultWindow(Screen):
     def go_to_hard(self):
@@ -2078,6 +2114,7 @@ class MultEasy(Screen):
     def __init__(self, **kw):
         super().__init__(**kw)
         self.add_widget(UT_Mult(0))
+
 
 # 1-12 multiplication
 class MultOneTwelve(Screen):
@@ -2164,29 +2201,24 @@ class Mult12(Screen):
         self.add_widget(UT_Mult(0, 12))
 
 
+####### Speed mode ???
+# class SpeedModeUTScreen(Screen):
+#     pass
 
-# Info and rules
-class InfoScreen(Screen):
-    def __init__(self, **kw):
-        super().__init__(**kw)
-        self.add_widget(Info())
+# class SpeedModeOneTwelveScreen(Screen):
+#     pass
 
-class Info(Widget):
+# class SpeedScreen(Screen):
+#     pass
+        
+
+
+####### Info about Trachtenberg method
+class TrachtenbergInfoPage(Screen):
     pass
 
-# Trachtenberg system conventions + trachtenberg history
-class TrachtSysInfo(FloatLayout):   
-    def __init__(self, **kw):
-        super(TrachtSysInfo, self).__init__(**kw)
-
-class TrachtSysInfoScreen(Screen):
-    def __init__(self, **kw):
-        super().__init__(**kw)
-        self.add_widget(TrachtSysInfo())
-
-# UT-multiplication info page
 # UT-multiplication rule explainer
-class UTInfo(Widget):
+class UT_info_wid(Widget):
     inter_plot = ObjectProperty(None)
     arrow_idx = 0
     
@@ -2242,14 +2274,15 @@ class UTInfo(Widget):
         self.arrow_idx -= 1
         self.box.clear_widgets()
         plt.close("all")
-        self.plotter(self.LHS.text, self.RHS.text)
-
-class UTInfoScreen(Screen):
-    def __init__(self, **kw):
-        super().__init__(**kw)
-        self.add_widget(UTInfo())
+        self.plotter(self.LHS.text, self.RHS.text)            
         
 
+class UT_info(Screen):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(UT_info_wid())
+
+        
 # [1-12] explainer
 class OneTwelveExplainer(Widget):
     inter_plot = ObjectProperty(None)
@@ -2407,29 +2440,33 @@ class TwelveExplainerScreen(Screen):
         self.add_widget(OneTwelveExplainer(12))
 
 
-# Get `kv` file
-# - the kivy file has same name is app class (minus the 'app' part and is thus loaded automatically)
-# kv = Builder.load_file("my.kv")
 
+# Trachtenberg system conventions + trachtenberg history
+class TrachtSysInfo(FloatLayout):   
+    def __init__(self, **kw):
+        super(TrachtSysInfo, self).__init__(**kw)
+
+class TrachtSysInfoScreen(Screen):
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        self.add_widget(TrachtSysInfo())
+
+
+
+
+# Get `kv` file
+# kv = Builder.load_file("my.kv")
+kv = Builder.load_file("my.kv")
 
 # My app
 class MyApp(App):
-    pass
-    # def build(self):
-    #     # self.cont = UT_Mult()
-    #     # return self.cont  
-    #     return kv
+    def build(self):
+        # self.cont = UT_Mult()
+        # return self.cont  
+        return kv
     
 
 # Run app
 if __name__ == "__main__":    
     app = MyApp()
     app.run()
-
-
-
-
-
-
-
-
