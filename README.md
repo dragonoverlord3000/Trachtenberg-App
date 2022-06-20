@@ -3,7 +3,8 @@ The trachtenberg system for multiplication is a way of multiplying large numbers
 ![Trachtenberg mult by 11](/carry_im.png)
 
 ## Download
-You can download the app for android systems by going to the *apk* folder and downloading the 'apk' file in it.
+You can download the app for android systems by going to the *apk* folder and downloading the 'apk' file in it to your phone. [DOWNLOAD](/apk/myapp-0.1-armeabi-v7a-debug.apk).
+
 
 ## Inspiration
 The inspiration for this simple practice app was the book: [The Trachtenberg Speed System of Basic Mathematics](https://amzn.to/3O10Pp7)
